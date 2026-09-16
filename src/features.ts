@@ -343,25 +343,6 @@ export const suites: Suite[] = [
     body: "Dari QR meja, kasir, pelayan, atau reservasi, semua pesanan masuk ke satu daftar, dibayar dengan cara apa pun, dan struknya sampai ke ponsel tamu.",
     features: [
       {
-        slug: "denah-meja",
-        name: "QR menu statis & sesi",
-        icon: icons.qr,
-        short: "QR statis di meja atau QR sesi per tamu.",
-        tagline: "QR menu statis atau sesi terbuka, Anda yang pilih.",
-        body: "Susun lantai dan meja sesuai ruangan, lalu pasang QR di tiap meja. QR statis tercetak permanen dan selalu membuka menu meja itu; QR sesi dicetak kasir per tamu dan tutup sendiri saat tagihannya selesai. Status meja mengikuti pesanan yang berjalan.",
-        highlights: [
-          "Beberapa lantai per outlet",
-          "QR statis permanen atau QR sesi per tamu",
-          "Laporan pemakaian meja",
-        ],
-        shots: [shots.floorPlan, shots.orderingMobile],
-        scene: {
-          src: tablesScene,
-          alt: "Manajer restoran di pass dapur menyusun denah lantai dasar di editor denah meja Qash dari laptop",
-          screen: { left: 44.4, top: 36.4, width: 42.3, height: 40.9 },
-        },
-      },
-      {
         slug: "daftar-pesanan",
         name: "Manajemen pesanan",
         icon: icons.orders,
@@ -389,6 +370,25 @@ export const suites: Suite[] = [
           "Rekening pencairan per akun",
         ],
         shots: [shots.digitalPlaceholder],
+      },
+      {
+        slug: "denah-meja",
+        name: "QR menu statis & sesi",
+        icon: icons.qr,
+        short: "QR statis di meja atau QR sesi per tamu.",
+        tagline: "QR menu statis atau sesi terbuka, Anda yang pilih.",
+        body: "Susun lantai dan meja sesuai ruangan, lalu pasang QR di tiap meja. QR statis tercetak permanen dan selalu membuka menu meja itu; QR sesi dicetak kasir per tamu dan tutup sendiri saat tagihannya selesai. Status meja mengikuti pesanan yang berjalan.",
+        highlights: [
+          "Beberapa lantai per outlet",
+          "QR statis permanen atau QR sesi per tamu",
+          "Laporan pemakaian meja",
+        ],
+        shots: [shots.floorPlan, shots.orderingMobile],
+        scene: {
+          src: tablesScene,
+          alt: "Manajer restoran di pass dapur menyusun denah lantai dasar di editor denah meja Qash dari laptop",
+          screen: { left: 44.4, top: 36.4, width: 42.3, height: 40.9 },
+        },
       },
       reservasi,
       {

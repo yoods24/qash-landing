@@ -1,10 +1,6 @@
 /* Brand tokens from "Qash Brand Guidelines 2025": E2 palette, D1 typefaces (Futura headlines, Maison Neue body).
-   Maison Neue is served from /fonts (same files the Qash app ships). Futura has no web license yet, so
-   headlines use Jost, self-hosted through the Fonts API in astro.config.mjs; swap --font-display when Futura lands. */
-@font-face { font-family: 'Maison Neue'; src: url('/fonts/maison-neue-light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
-@font-face { font-family: 'Maison Neue'; src: url('/fonts/maison-neue-book.woff2') format('woff2'); font-weight: 400; font-display: swap; }
-@font-face { font-family: 'Maison Neue'; src: url('/fonts/maison-neue-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
-
+   Neither has a web license, so both faces are free stand-ins self-hosted through the Fonts API in astro.config.mjs:
+   Jost for Futura (swap --font-display when Futura lands) and Hanken Grotesk for Maison Neue. */
 :root {
   --orange: #ff8343;
   --orange-deep: #f26a1f; /* hover */
@@ -24,7 +20,7 @@
   --green: #01be5f;
 
   --font-display: var(--font-jost, 'Jost', 'Futura', sans-serif);
-  --font-body: 'Maison Neue', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: var(--font-hanken, 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif);
 
   --container: 76rem;
   --radius: 18px;

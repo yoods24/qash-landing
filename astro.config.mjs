@@ -1,9 +1,6 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import { loadEnv } from 'vite';
-
-const { PUBLIC_SITE_URL } = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), 'PUBLIC_');
 
 // Dev-only workaround (Astro 7.3 + Vite 8): when a .astro edit changes markup and styles in the same
 // save, Vite pushes the component's CSS module to the browser before Astro has recompiled the file,
@@ -21,11 +18,14 @@ const reloadOnAstroStyleChange = {
 
 // https://astro.build/config
 export default defineConfig({
-  // Canonical URLs, Open Graph URLs, robots.txt's sitemap line, and the sitemap itself switch on once
-  // PUBLIC_SITE_URL is set in .env (the public domain is not decided yet).
-  site: PUBLIC_SITE_URL || undefined,
+  // Public address of the site: canonical and Open Graph URLs, robots.txt's sitemap line, and the sitemap.
+  site: 'https://home.withqash.com',
+  // Pages build as `harga.html` rather than `harga/index.html`, so Cloudflare Pages serves `/harga` without a
+  // redirect and the canonical URL matches the served one.
+  build: { format: 'file' },
   integrations: [sitemap()],
-  // Headline face self-hosted at build time; the brand's Futura has no web license yet.
+  // Both faces self-hosted at build time. Jost stands in for the brand's Futura (no web license yet) and Hanken
+  // Grotesk for Maison Neue (commercial, no web license); both are SIL OFL from Google Fonts.
   fonts: [
     {
       provider: fontProviders.google(),
@@ -35,6 +35,15 @@ export default defineConfig({
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['Futura', 'Century Gothic', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Hanken Grotesk',
+      cssVariable: '--font-hanken',
+      weights: ['100 900'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['Helvetica Neue', 'Arial', 'sans-serif'],
     },
   ],
   vite: { plugins: [reloadOnAstroStyleChange] },
