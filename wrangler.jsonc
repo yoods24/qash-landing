@@ -1,0 +1,13 @@
+{
+  // Static-assets Worker: `wrangler deploy` uploads dist/ as-is. Without this file, wrangler runs its Astro setup on
+  // the build host, adds the @astrojs/cloudflare adapter, and rebuilds with on-demand /_image URLs that a static site
+  // cannot answer (images 404).
+  "$schema": "https://esm.sh/wrangler/config-schema.json",
+  "name": "qash-landing",
+  "compatibility_date": "2026-09-16",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
