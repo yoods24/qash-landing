@@ -119,7 +119,8 @@ const box = (r: typeof s) => `left: ${r.left}%; top: ${r.top}%; width: ${r.width
   }
   .ps-right .ps-photo { --cx: 60; }
   /* Hover: the room dims and the picture leans in towards the screen, which stays lit. */
-  .ps-media:hover .ps-photo, .ps-media:has(.frame-zoom:focus-visible) .ps-photo { scale: 1.04; }
+  /* !important: GSAP (motion.ts) leaves scale: none inline on the photo once it animates it. */
+  .ps-media:hover .ps-photo, .ps-media:has(.frame-zoom:focus-visible) .ps-photo { scale: 1.04 !important; }
   .ps-photo :global(.ps-img) { position: absolute; inset: 0; background: transparent; }
   .ps-dim {
     position: absolute;
