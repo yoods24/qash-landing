@@ -1,0 +1,287 @@
+/* Brand tokens from "Qash Brand Guidelines 2025": E2 palette, D1 typefaces (Futura headlines, Maison Neue body).
+   Maison Neue is served from /fonts (same files the Qash app ships). Futura has no web license yet, so
+   headlines use Jost, self-hosted through the Fonts API in astro.config.mjs; swap --font-display when Futura lands. */
+@font-face { font-family: 'Maison Neue'; src: url('/fonts/maison-neue-light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'Maison Neue'; src: url('/fonts/maison-neue-book.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Maison Neue'; src: url('/fonts/maison-neue-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
+:root {
+  --orange: #ff8343;
+  --orange-deep: #f26a1f; /* hover */
+  --orange-text: #c2410c; /* orange that passes contrast for small text on light backgrounds */
+  --orange-tint: #fff0e6;
+  --navy: #142566;
+  --navy-deep: #0d1948;
+  --blue: #6996cc; /* dusty blue: fills and accents only, never text (guideline D4) */
+  --blue-tint: #e9f0f9;
+  --cream: #f7f0e8;
+  --cream-deep: #efe4d6;
+  --paper: #fafafa;
+  --white: #ffffff;
+  --ink: #131313;
+  --muted: #625c56;
+  --line: #e7dfd4;
+  --green: #01be5f;
+
+  --font-display: var(--font-jost, 'Jost', 'Futura', sans-serif);
+  --font-body: 'Maison Neue', 'Helvetica Neue', Arial, sans-serif;
+
+  --container: 76rem;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-card: 0 1px 2px rgba(19, 19, 19, 0.04), 0 24px 48px -28px rgba(20, 37, 102, 0.35);
+  --shadow-device: 0 2px 6px rgba(13, 25, 72, 0.08), 0 40px 70px -36px rgba(13, 25, 72, 0.55);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+/* Page scroll is locked while a screenshot is open full screen; zoom.ts measures the scrollbar into --sbw so the page
+   keeps its width instead of jumping sideways. */
+html.lb-open { overflow: hidden; padding-right: var(--sbw, 0px); }
+html.lb-open .wa-bar { opacity: 0; pointer-events: none; }
+@supports (interpolate-size: allow-keywords) { html { interpolate-size: allow-keywords; } }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); letter-spacing: -0.025em; }
+h2 { font-size: clamp(1.9rem, 4vw, 2.9rem); }
+h3 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); }
+p, ul, ol, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: inherit; }
+strong { font-weight: 700; }
+button { font: inherit; color: inherit; }
+img { max-width: 100%; height: auto; }
+
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 4px; }
+
+.skip { position: absolute; left: 1rem; top: -4rem; z-index: 100; padding: 0.6rem 1rem; background: var(--navy); color: var(--white); border-radius: 999px; text-decoration: none; }
+.skip:focus { top: 1rem; }
+
+.container { width: min(100% - 2.5rem, var(--container)); margin-inline: auto; }
+.section { padding-block: clamp(4rem, 9vw, 7.5rem); }
+.section-cream { background: var(--cream); }
+.section-paper { background: var(--paper); }
+
+.section-head { max-width: 44rem; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+.section-head p { margin-top: 1rem; font-size: 1.15rem; color: var(--muted); text-wrap: pretty; }
+.section-head.center { margin-inline: auto; text-align: center; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange-text);
+}
+.eyebrow::before { content: ''; flex: none; width: 1.5rem; height: 2px; margin-top: 0.55em; background: var(--orange); border-radius: 2px; }
+
+.lead { font-size: clamp(1.1rem, 1.6vw, 1.3rem); line-height: 1.55; color: var(--muted); text-wrap: pretty; }
+
+/* Buttons: pill shape, the same silhouette the app uses. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.9rem 1.5rem;
+  border: 2px solid transparent;
+  border-radius: 2px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: border-color 250ms var(--ease), color 250ms var(--ease);
+}
+/* Hover: the brand's second colour slides in from the left under the label and the label turns white; on leave it
+   slides back out to the left, so the original colour returns from the right. Navy buttons do it in orange. */
+.btn::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--navy); transform: scaleX(0); transform-origin: left center; transition: transform 380ms var(--ease); }
+.btn:hover::before, .btn:focus-visible::before { transform: scaleX(1); }
+.btn:hover, .btn:focus-visible { color: var(--white); }
+.btn-primary { border-color: var(--orange); background: var(--orange); color: var(--ink); }
+.btn-primary:hover, .btn-primary:focus-visible { border-color: var(--navy); } /* no orange ring around the navy fill */
+.btn-navy { background: var(--navy); color: var(--white); }
+.btn-navy::before { background: var(--orange); }
+.btn-navy:hover, .btn-navy:focus-visible { color: var(--ink); }
+.btn-ghost { border-color: var(--line); background: var(--white); }
+.btn-ghost:hover, .btn-ghost:focus-visible { border-color: var(--navy); }
+.btn-ghost-light { border-color: rgba(255, 255, 255, 0.35); color: var(--white); }
+.btn-ghost-light:hover, .btn-ghost-light:focus-visible { border-color: rgba(255, 255, 255, 0.6); }
+@media (prefers-reduced-motion: reduce) { .btn::before { transition: none; } }
+.btn-sm { padding: 0.6rem 1.15rem; font-size: 0.9rem; }
+.btn-icon { display: inline-flex; width: 1.15rem; height: 1.15rem; flex: none; }
+.btn-icon svg { width: 100%; height: 100%; }
+
+.icon { display: inline-flex; width: 1.5rem; height: 1.5rem; color: var(--orange-text); }
+.icon svg { width: 100%; height: 100%; }
+
+.check-list { display: grid; gap: 0.6rem; }
+.check-list li { position: relative; padding-left: 1.75rem; }
+.check-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  background: var(--orange) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23131313' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 62% no-repeat;
+}
+
+.text-link { font-family: var(--font-display); font-weight: 600; color: var(--orange-text); text-decoration: none; }
+.text-link:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+.arrow::after { content: ' \2192'; }
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgba(19, 19, 19, 0.03);
+}
+
+/* Jump chips: one pill per section of a page, with the section's icon (group pages, business types on phones). */
+.jump { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+.jump a { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.4rem 0.85rem 0.4rem 0.6rem; border: 1px solid var(--line); border-radius: 999px; background: var(--white); font-size: 0.9rem; font-weight: 700; text-decoration: none; transition: border-color 200ms var(--ease), transform 200ms var(--ease); }
+.jump a:hover { border-color: var(--orange); transform: translateY(-2px); }
+.jump .icon { width: 1.15rem; height: 1.15rem; }
+
+/* Custom cursor for mouse users (src/scripts/cursor.ts): an orange dot under the pointer and a ring a beat behind it.
+   The native cursor hides only once the custom one is on. The element is a manual popover so it paints in the top
+   layer, above the full-screen screenshot view. */
+html.cur-on, html.cur-on * { cursor: none !important; }
+.cur { position: fixed; inset: 0 auto auto 0; width: 0; height: 0; margin: 0; padding: 0; border: 0; overflow: visible; background: none; pointer-events: none; opacity: 0; transition: opacity 250ms var(--ease); }
+html.cur-on .cur { opacity: 1; }
+/* GSAP moves the two parts; each draws itself on an inner element, so its size and scale never mix with that transform. */
+.cur-dot, .cur-ring { position: absolute; left: 0; top: 0; }
+.cur-dot b, .cur-ring b { display: grid; place-items: center; border-radius: 50%; translate: -50% -50%; }
+.cur-dot b { width: 8px; height: 8px; background: var(--orange); transition: scale 250ms var(--ease), opacity 250ms var(--ease); }
+.cur-ring b { width: 34px; height: 34px; border: 1.5px solid var(--orange); background: rgba(255, 131, 67, 0); scale: 0.4; transition: width 300ms var(--ease), height 300ms var(--ease), scale 300ms var(--ease), border-color 250ms var(--ease), background-color 250ms var(--ease); }
+html.cur-on .cur-ring b { scale: 1; }
+/* The ring's bars: a plus over a screen that opens full screen, a cross inside the full-screen view. */
+.cur-ring b::before, .cur-ring b::after { content: ''; grid-area: 1 / 1; width: 12px; height: 2px; border-radius: 2px; background: var(--white); scale: 0; transition: scale 250ms var(--ease), rotate 250ms var(--ease); }
+.cur-ring b::after { rotate: 90deg; }
+/* Over a link or button: the dot slips inside a wider, tinted ring. */
+.cur[data-state='link'] .cur-dot b { scale: 0.5; }
+.cur[data-state='link'] .cur-ring b { width: 52px; height: 52px; background: rgba(255, 131, 67, 0.14); }
+/* Over something that opens full screen: a viewfinder. */
+.cur[data-state='zoom'] .cur-dot b, .cur[data-state='close'] .cur-dot b { opacity: 0; }
+.cur[data-state='zoom'] .cur-ring b, .cur[data-state='close'] .cur-ring b { width: 64px; height: 64px; border-color: rgba(255, 255, 255, 0.9); background: rgba(19, 19, 19, 0.45); }
+.cur[data-state='zoom'] .cur-ring b::before, .cur[data-state='zoom'] .cur-ring b::after, .cur[data-state='close'] .cur-ring b::before, .cur[data-state='close'] .cur-ring b::after { scale: 1; }
+.cur[data-state='close'] .cur-ring b::before { rotate: 45deg; }
+.cur[data-state='close'] .cur-ring b::after { rotate: 135deg; }
+/* Pressing pinches the ring. */
+.cur[data-down] .cur-ring b { scale: 0.8; }
+
+/* Full-screen screenshot view (src/scripts/zoom.ts). The dialog covers the viewport; the zoomed copy of the frame is
+   positioned in viewport coordinates, the same ones getBoundingClientRect reports for the original. */
+.lb {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: transparent;
+  color: var(--white);
+  cursor: zoom-out;
+}
+.lb::backdrop { background: transparent; }
+.lb-scrim { position: absolute; inset: 0; background: rgba(13, 25, 72, 0.9); opacity: 0; }
+.lb .lb-frame { position: absolute; margin: 0; }
+.lb-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
+  color: rgba(255, 255, 255, 0.82);
+  opacity: 0;
+}
+.lb-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: var(--navy-deep);
+  color: var(--white);
+  cursor: pointer;
+  opacity: 0;
+  transition: background-color 180ms var(--ease);
+}
+.lb-close:hover { background: #1b2a66; }
+
+/* Headlines split and animated by GSAP (src/scripts/motion.ts); hidden only while JS runs, until the split is ready. */
+html.js [data-split] { visibility: hidden; }
+
+/* Scroll reveal. Hidden only while JS runs (html.js is set inline in <head>). */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+html.js [data-reveal].in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  html.js [data-reveal] { opacity: 1; transform: none; }
+  html.js [data-split] { visibility: visible; }
+}
+
+/* The price line: "Hanya dengan" Rp 1k /transaksi, on the home page and the pricing page hero; src/scripts/motion.ts
+   (pricing) counts it up and folds the thousands into the k. */
+.price-head { text-align: center; }
+.price-line { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; column-gap: clamp(0.6rem, 1.5vw, 1.25rem); row-gap: 0.5rem; margin-top: 1rem; font-weight: 600; line-height: 1; }
+.price-lead { font-size: clamp(1.5rem, 2.8vw, 2.4rem); font-weight: 500; }
+.price-tag { position: relative; display: inline-flex; align-items: baseline; font-size: clamp(5rem, 13vw, 10.5rem); letter-spacing: -0.03em; color: var(--ink); font-variant-numeric: tabular-nums; transition: color 400ms var(--ease); }
+/* While the market's prices show, the line is grey and each one gets struck out. */
+.price-line.is-fake .price-tag, .price-line.is-fake .price-tag small { color: var(--muted); }
+.price-strike { position: absolute; left: -0.04em; right: -0.04em; top: 0.44em; height: 0.07em; border-radius: 2px; background: var(--orange-text); transform: scaleX(0); pointer-events: none; }
+.price-tag small { margin-right: 0.08em; font-size: 0.32em; font-weight: 600; color: var(--orange-text); letter-spacing: 0; }
+.price-thou { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: baseline; }
+.price-thou[hidden] { display: none; }
+.price-k { display: inline-block; color: var(--orange-text); transform-origin: left bottom; }
+.price-per { font-size: clamp(1.6rem, 3.2vw, 2.8rem); color: var(--muted); }

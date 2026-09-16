@@ -1,0 +1,196 @@
+---
+// Small animated illustrations for features that have no screenshot yet: one inline SVG each, drawn in the brand
+// palette, looping with CSS alone. The resting styles are the finished state, so with reduced motion (or no CSS
+// animation) each picture still tells the whole story at a glance.
+//   kind   the feature slug: transfer-outlet, produksi, pemasok, absensi, split-payment.
+interface Props {
+  kind: string;
+}
+
+const { kind } = Astro.props;
+const notes: Record<string, string> = {
+  'transfer-outlet': 'Dikirim dari pusat, dikonfirmasi di cabang. Stok berubah di dua sisi.',
+  produksi: 'Satu batch: bahan mentah terpotong, hasil produksi masuk stok dengan HPP-nya.',
+  pemasok: 'Setiap pengiriman tercatat ke pemasoknya; saldo terutang turun saat dibayar.',
+  absensi: 'Lokasi di dalam radius outlet dan selfie yang cocok, baru absen diterima.',
+  'split-payment': 'Satu tagihan, dua metode: sisa terhitung sendiri sampai lunas.',
+};
+---
+
+<figure class="viz card" data-viz={kind}>
+  {kind === 'transfer-outlet' && (
+    <svg viewBox="0 0 320 180" aria-hidden="true">
+      <path class="tr-track" d="M84 104 C 120 30, 200 30, 236 104" />
+      <g class="tr-box"><rect x="-10" y="-8" width="20" height="16" rx="3" /><path d="M-10 -2h20M0 -8v6" /></g>
+      <g class="outlet" transform="translate(30 92)"><rect x="0" y="12" width="56" height="44" rx="6" /><path d="M0 12 L28 -2 L56 12" /><rect x="22" y="34" width="12" height="22" /><text x="28" y="76">Outlet Pusat</text><text class="n" x="28" y="90">40 → 28</text></g>
+      <g class="outlet" transform="translate(234 92)"><rect x="0" y="12" width="56" height="44" rx="6" /><path d="M0 12 L28 -2 L56 12" /><rect x="22" y="34" width="12" height="22" /><text x="28" y="76">Cabang Kemang</text><text class="n" x="28" y="90">3 → 15</text></g>
+      <g class="tr-chip" transform="translate(262 62)"><rect x="-40" y="-11" width="80" height="22" rx="11" /><text x="0" y="4">+12 diterima</text></g>
+    </svg>
+  )}
+  {kind === 'produksi' && (
+    <svg viewBox="0 0 320 180" aria-hidden="true">
+      <g class="pd-in" transform="translate(28 30)">
+        <g class="bar" style="--h: 80; --to: 44"><rect class="bg" x="0" y="0" width="22" height="80" rx="5" /><rect class="fill" x="0" y="0" width="22" height="80" rx="5" /><text x="11" y="98">Tepung</text></g>
+        <g class="bar" transform="translate(36 0)" style="--h: 80; --to: 52"><rect class="bg" x="0" y="0" width="22" height="80" rx="5" /><rect class="fill" x="0" y="0" width="22" height="80" rx="5" /><text x="11" y="98">Gula</text></g>
+        <g class="bar" transform="translate(72 0)" style="--h: 80; --to: 60"><rect class="bg" x="0" y="0" width="22" height="80" rx="5" /><rect class="fill" x="0" y="0" width="22" height="80" rx="5" /><text x="11" y="98">Mentega</text></g>
+      </g>
+      <g transform="translate(140 62)"><rect class="pd-oven" x="0" y="0" width="64" height="40" rx="8" /><rect class="pd-prog-bg" x="10" y="26" width="44" height="6" rx="3" /><rect class="pd-prog" x="10" y="26" width="44" height="6" rx="3" /><text class="pd-oven-t" x="32" y="18">Produksi</text><text x="32" y="58">Batch #12</text></g>
+      <path class="pd-arrow" d="M120 82h14m-5 -5l5 5-5 5M210 82h14m-5 -5l5 5-5 5" />
+      <g class="pd-out" transform="translate(236 40)">
+        <g class="loaf"><ellipse cx="30" cy="70" rx="22" ry="10" /></g>
+        <g class="loaf"><ellipse cx="30" cy="56" rx="22" ry="10" /></g>
+        <g class="loaf"><ellipse cx="30" cy="42" rx="22" ry="10" /></g>
+        <text x="30" y="100">Roti sourdough</text><text class="n" x="30" y="114">+24 pcs</text>
+      </g>
+    </svg>
+  )}
+  {kind === 'pemasok' && (
+    <svg viewBox="0 0 320 180" aria-hidden="true">
+      <g class="sp-row" transform="translate(20 22)"><circle cx="12" cy="12" r="12" /><text class="sp-av" x="12" y="16">PB</text><text class="sp-name" x="34" y="10">Pak Budi · Sayur & buah</text><text class="sp-sub" x="34" y="24">PO-0931 · 2 hari lalu</text><g class="sp-status is-paid" transform="translate(280 12)"><rect x="-38" y="-10" width="76" height="20" rx="10" /><text x="0" y="4">Lunas</text></g></g>
+      <g class="sp-row" transform="translate(20 62)"><circle cx="12" cy="12" r="12" /><text class="sp-av" x="12" y="16">CS</text><text class="sp-name" x="34" y="10">CV Segar · Susu & krim</text><text class="sp-sub" x="34" y="24">PO-0934 · jatuh tempo 3 hari</text><g class="sp-status" transform="translate(280 12)"><rect x="-38" y="-10" width="76" height="20" rx="10" /><text x="0" y="4">Rp640.000</text></g></g>
+      <path class="sp-road" d="M20 150 H300" />
+      <g class="sp-dest" transform="translate(264 112)"><rect x="0" y="10" width="36" height="28" rx="5" /><path d="M0 10 L18 0 L36 10" /></g>
+      <g class="sp-truck"><rect x="-22" y="-16" width="30" height="20" rx="3" /><path d="M8 -8h10l6 6v6H8z" /><circle cx="-12" cy="6" r="4" /><circle cx="14" cy="6" r="4" /></g>
+    </svg>
+  )}
+  {kind === 'absensi' && (
+    <svg viewBox="0 0 320 180" aria-hidden="true">
+      <rect class="ab-phone" x="44" y="12" width="84" height="156" rx="14" />
+      <rect class="ab-map" x="52" y="24" width="68" height="76" rx="8" />
+      <path class="ab-street" d="M52 60 Q 86 50 120 68 M70 24 V100" />
+      <circle class="ab-radius" cx="86" cy="62" r="24" />
+      <g class="ab-pin"><path d="M0 0 C -7 -9 -7 -20 0 -20 C 7 -20 7 -9 0 0Z" /><circle cx="0" cy="-14" r="3" /></g>
+      <circle class="ab-face" cx="86" cy="130" r="18" />
+      <circle class="ab-scan" cx="86" cy="130" r="22" />
+      <path class="ab-face-d" d="M86 124 a5 5 0 1 0 0.1 0 M74 141 a12 8 0 0 1 24 0" />
+      <g class="ab-ok" transform="translate(104 116)"><circle r="8" /><path d="M-3.5 0.5 l2.5 2.5 l4.5 -5" /></g>
+      <g class="ab-text" transform="translate(150 44)">
+        <text class="ab-time" x="0" y="0">08:58</text>
+        <text class="ab-line" x="0" y="24">Dalam radius 100 m</text>
+        <text class="ab-line" x="0" y="44">Selfie cocok</text>
+        <g class="ab-chip" transform="translate(0 66)"><rect x="0" y="0" width="64" height="24" rx="12" /><text x="32" y="16">Hadir</text></g>
+      </g>
+    </svg>
+  )}
+  {kind === 'split-payment' && (
+    <svg viewBox="0 0 320 180" aria-hidden="true">
+      <text class="sp-lbl" x="20" y="30">Total tagihan</text>
+      <text class="sp-total" x="300" y="32">Rp257.700</text>
+      <rect class="sb-track" x="20" y="52" width="280" height="22" rx="11" />
+      <rect class="sb-cash" x="20" y="52" width="280" height="22" rx="11" />
+      <rect class="sb-qris" x="129" y="52" width="171" height="22" rx="11" />
+      <g class="sb-leg" transform="translate(20 100)"><rect class="sb-dot-cash" x="0" y="-8" width="10" height="10" rx="3" /><text x="16" y="0">Tunai</text><text class="n" x="16" y="16">Rp100.000</text><g class="sb-tick" transform="translate(96 -3)"><circle r="7" /><path d="M-3 0.5 l2 2 l4 -4.5" /></g></g>
+      <g class="sb-leg sb-leg-2" transform="translate(180 100)"><rect class="sb-dot-qris" x="0" y="-8" width="10" height="10" rx="3" /><text x="16" y="0">QRIS</text><text class="n" x="16" y="16">Rp157.700</text><g class="sb-tick" transform="translate(96 -3)"><circle r="7" /><path d="M-3 0.5 l2 2 l4 -4.5" /></g></g>
+      <text class="sb-rest" x="20" y="154">Sisa <tspan class="n">Rp0</tspan> · Lunas</text>
+    </svg>
+  )}
+  <figcaption>{notes[kind]}</figcaption>
+</figure>
+
+<style>
+  .viz { margin: 0; padding: 1.25rem 1.25rem 1rem; font-family: var(--font-display); }
+  /* Type defaults sit on the svg and inherit, so a label's own class can override any of them. */
+  .viz svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--font-display); font-size: 9.5px; font-weight: 600; text-anchor: middle; fill: var(--ink); }
+  .viz .n { font-weight: 500; fill: var(--muted); font-variant-numeric: tabular-nums; }
+  figcaption { margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px solid var(--line); font-size: 0.86rem; font-weight: 500; color: var(--muted); }
+
+  /* Transfer: the parcel rides the dashed curve from one outlet to the other; the receipt chip pops at the far end. */
+  .tr-track { fill: none; stroke: var(--navy); stroke-width: 1.6; stroke-dasharray: 5 6; opacity: 0.45; animation: tr-dash 1.2s linear infinite; }
+  .outlet rect, .outlet path { fill: var(--cream); stroke: var(--navy); stroke-width: 1.6; stroke-linejoin: round; }
+  .outlet rect:last-of-type { fill: var(--orange); stroke: none; }
+  .tr-box rect { fill: var(--orange); }
+  .tr-box path { fill: none; stroke: var(--ink); stroke-width: 1.4; opacity: 0.6; }
+  .tr-box { offset-path: path('M84 104 C 120 30, 200 30, 236 104'); offset-rotate: 0deg; offset-distance: 100%; animation: tr-go 4s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
+  .tr-chip rect { fill: var(--green); }
+  .tr-chip text { fill: var(--ink); }
+  .tr-chip { animation: tr-chip 4s ease-out infinite; }
+  @keyframes tr-dash { to { stroke-dashoffset: -11; } }
+  @keyframes tr-go { 0% { offset-distance: 0%; opacity: 0; } 8% { opacity: 1; } 72% { offset-distance: 100%; opacity: 1; } 80%, 100% { offset-distance: 100%; opacity: 0; } }
+  @keyframes tr-chip { 0%, 72% { opacity: 0; translate: 0 6px; } 80%, 94% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
+
+  /* Production: the raw bars sink as the batch runs, the oven's bar fills, the loaves stack up. */
+  .bar .bg { fill: var(--cream); }
+  .bar .fill { fill: var(--navy); transform-box: fill-box; transform-origin: bottom; transform: scaleY(calc(var(--to) / var(--h))); animation: pd-bar 5s ease-in-out infinite; }
+  .pd-oven { fill: var(--orange); }
+  .pd-oven-t { fill: var(--ink); }
+  .pd-prog-bg { fill: rgba(19, 19, 19, 0.18); }
+  .pd-prog { fill: var(--ink); transform-box: fill-box; transform-origin: left; animation: pd-prog 5s ease-in-out infinite; }
+  .pd-arrow { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .loaf ellipse { fill: var(--cream); stroke: var(--orange); stroke-width: 2; }
+  .loaf { transform-box: fill-box; transform-origin: center; animation: pd-loaf 5s ease-out infinite; }
+  .loaf:nth-of-type(2) { animation-delay: 0.2s; }
+  .loaf:nth-of-type(3) { animation-delay: 0.4s; }
+  @keyframes pd-bar { 0%, 10% { transform: scaleY(1); } 60%, 100% { transform: scaleY(calc(var(--to) / var(--h))); } }
+  @keyframes pd-prog { 0%, 10% { transform: scaleX(0); } 60%, 100% { transform: scaleX(1); } }
+  @keyframes pd-loaf { 0%, 55% { opacity: 0; transform: translateY(8px) scale(0.8); } 70%, 100% { opacity: 1; transform: none; } }
+
+  /* Suppliers: the truck runs the road to the outlet; when it arrives the first invoice reads paid. */
+  .sp-row circle { fill: var(--cream); }
+  .sp-av { fill: var(--navy); font-size: 8.5px; }
+  .sp-name { text-anchor: start; }
+  .sp-sub { text-anchor: start; font-weight: 500; fill: var(--muted); font-size: 8.5px; }
+  .sp-status rect { fill: var(--cream); }
+  .sp-status text { font-size: 8.5px; fill: var(--ink); }
+  .sp-status.is-paid rect { fill: var(--green); animation: sp-paid 5s ease-out infinite; }
+  .sp-road { stroke: var(--line); stroke-width: 2; stroke-dasharray: 8 6; }
+  .sp-dest rect, .sp-dest path { fill: var(--cream); stroke: var(--navy); stroke-width: 1.6; stroke-linejoin: round; }
+  .sp-truck rect, .sp-truck path { fill: var(--orange); }
+  .sp-truck circle { fill: var(--ink); }
+  .sp-truck { offset-path: path('M40 146 H226'); offset-rotate: 0deg; offset-distance: 100%; animation: sp-truck 5s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
+  @keyframes sp-truck { 0% { offset-distance: 0%; opacity: 0; } 8% { opacity: 1; } 60%, 100% { offset-distance: 100%; opacity: 1; } }
+  @keyframes sp-paid { 0%, 60% { fill: var(--cream); } 72%, 100% { fill: var(--green); } }
+
+  /* Attendance: the pin drops inside the outlet's radius, the selfie is scanned, the check lands, "Hadir" appears. */
+  .ab-phone { fill: var(--white); stroke: var(--ink); stroke-width: 2; }
+  .ab-map { fill: var(--cream); }
+  .ab-street { fill: none; stroke: var(--white); stroke-width: 3; }
+  .ab-radius { fill: rgba(255, 131, 67, 0.12); stroke: var(--orange); stroke-width: 1.4; stroke-dasharray: 3 3; }
+  .ab-pin path { fill: var(--green); }
+  .ab-pin circle { fill: var(--white); }
+  .ab-pin { transform: translate(86px, 66px); animation: ab-pin 5s ease-out infinite; }
+  .ab-face { fill: var(--cream); }
+  .ab-face-d { fill: none; stroke: var(--navy); stroke-width: 1.6; }
+  .ab-scan { fill: none; stroke: var(--orange); stroke-width: 1.6; stroke-dasharray: 20 118; transform-box: fill-box; transform-origin: center; opacity: 0; animation: ab-scan 5s linear infinite; }
+  .ab-ok circle { fill: var(--green); }
+  .ab-ok path { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .ab-ok { animation: ab-ok 5s ease-out infinite; }
+  .ab-time { text-anchor: start; font-size: 20px; }
+  .ab-line { text-anchor: start; font-weight: 500; fill: var(--muted); }
+  .ab-chip rect { fill: var(--green); }
+  .ab-chip text { fill: var(--ink); font-size: 11px; }
+  .ab-chip { animation: ab-chip 5s ease-out infinite; }
+  .ab-line:nth-of-type(2) { animation: ab-fade 5s ease-out infinite; }
+  .ab-line:nth-of-type(3) { animation: ab-fade-2 5s ease-out infinite; }
+  @keyframes ab-pin { 0%, 8% { transform: translate(86px, 30px); opacity: 0; } 22% { transform: translate(86px, 66px); opacity: 1; } 26% { transform: translate(86px, 62px); } 30%, 100% { transform: translate(86px, 66px); opacity: 1; } }
+  @keyframes ab-scan { 0%, 30% { opacity: 0; transform: rotate(0deg); } 34% { opacity: 1; } 60% { opacity: 1; transform: rotate(540deg); } 64%, 100% { opacity: 0; transform: rotate(540deg); } }
+  @keyframes ab-ok { 0%, 62% { opacity: 0; transform: translate(104px, 116px) scale(0.5); } 70%, 100% { opacity: 1; transform: translate(104px, 116px) scale(1); } }
+  @keyframes ab-fade { 0%, 24% { opacity: 0; } 32%, 100% { opacity: 1; } }
+  @keyframes ab-fade-2 { 0%, 62% { opacity: 0; } 70%, 100% { opacity: 1; } }
+  @keyframes ab-chip { 0%, 72% { opacity: 0; translate: 0 6px; } 82%, 100% { opacity: 1; translate: 0 0; } }
+
+  /* Split payment: one bar, first all cash, then the QRIS share grows in; both legs get their tick, the rest reads zero. */
+  .sp-lbl { text-anchor: start; fill: var(--muted); font-weight: 500; }
+  .sp-total { text-anchor: end; font-size: 14px; }
+  .sb-track { fill: var(--cream); }
+  .sb-cash { fill: var(--orange); }
+  .sb-qris { fill: var(--navy); transform-box: fill-box; transform-origin: right; animation: sb-qris 4.5s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
+  .sb-dot-cash { fill: var(--orange); }
+  .sb-dot-qris { fill: var(--navy); }
+  .sb-leg text { text-anchor: start; }
+  .sb-tick circle { fill: var(--green); }
+  .sb-tick path { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .sb-leg .sb-tick { animation: sb-tick 4.5s ease-out infinite; }
+  .sb-leg-2 { animation: sb-leg 4.5s ease-out infinite; }
+  .sb-leg-2 .sb-tick { animation-name: sb-tick-2; }
+  .sb-rest { text-anchor: start; font-weight: 500; fill: var(--muted); animation: sb-rest 4.5s ease-out infinite; }
+  .sb-rest .n { fill: var(--ink); font-weight: 600; }
+  @keyframes sb-qris { 0%, 18% { transform: scaleX(0); } 45%, 100% { transform: scaleX(1); } }
+  @keyframes sb-leg { 0%, 18% { opacity: 0; } 40%, 100% { opacity: 1; } }
+  @keyframes sb-tick { 0%, 50% { opacity: 0; transform: translate(96px, -3px) scale(0.5); } 58%, 100% { opacity: 1; transform: translate(96px, -3px) scale(1); } }
+  @keyframes sb-tick-2 { 0%, 62% { opacity: 0; transform: translate(96px, -3px) scale(0.5); } 70%, 100% { opacity: 1; transform: translate(96px, -3px) scale(1); } }
+  @keyframes sb-rest { 0%, 70% { opacity: 0; } 80%, 100% { opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .viz * { animation: none !important; }
+  }
+</style>

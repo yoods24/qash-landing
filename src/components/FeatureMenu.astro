@@ -1,0 +1,78 @@
+---
+// The Fitur menu: one row per group. The name links to the group's page; the chevron beside it unfolds the group's
+// features underneath. Rendered in the desktop mega menu and the phone drawer; the header script in Layout.astro
+// toggles the folds ([data-fold]), the CSS below animates them.
+import { suites } from '../features';
+
+const chevron = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg>';
+---
+
+<ul class="fmenu">
+  {suites.map((s) => (
+    <li>
+      <div class="row">
+        <a href={`/fitur/${s.slug}`}>
+          <span class="icon" set:html={s.icon} />
+          <span class="text"><strong>{s.name}</strong><small>{s.short}</small></span>
+        </a>
+        <button type="button" aria-expanded="false" aria-label={`Tampilkan bagian ${s.name}`} data-fold set:html={chevron} />
+      </div>
+      <div class="sub">
+        <ul>{s.features.map((f) => <li><a href={`/fitur/${s.slug}#${f.slug}`}>{f.name}</a></li>)}</ul>
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .fmenu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.15rem 1.5rem; align-items: start; }
+  .row { display: flex; align-items: stretch; gap: 0.25rem; }
+  .row > a {
+    display: grid;
+    flex: 1;
+    grid-template-columns: 1.4rem 1fr;
+    column-gap: 0.7rem;
+    align-items: start;
+    padding: 0.55rem 0.6rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--ink);
+    transition: background-color 200ms var(--ease);
+  }
+  .row > a:hover, .row > a[aria-current] { background: var(--cream); }
+  .icon { width: 1.4rem; height: 1.4rem; color: var(--orange); }
+  .icon :global(svg) { width: 100%; height: 100%; }
+  .text { display: grid; }
+  .text strong { font-family: var(--font-display); font-weight: 600; }
+  .text small { font-size: 0.85rem; color: var(--muted); }
+  .row > button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background-color 200ms var(--ease), color 200ms;
+  }
+  .row > button:hover { background: var(--cream); color: var(--ink); }
+  .row > button :global(svg) { width: 0.9rem; height: 0.9rem; transition: transform 250ms var(--ease); }
+  .row > button[aria-expanded='true'] :global(svg) { transform: rotate(180deg); }
+  /* The fold: a 0fr -> 1fr grid row animates to the list's own height. */
+  .sub { display: grid; grid-template-rows: 0fr; margin-left: 2.7rem; transition: grid-template-rows 300ms var(--ease); }
+  .sub > ul { display: grid; gap: 0.1rem; min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 300ms; }
+  .sub li:last-child { padding-bottom: 0.5rem; }
+  .row:has([aria-expanded='true']) + .sub { grid-template-rows: 1fr; }
+  .row:has([aria-expanded='true']) + .sub > ul { visibility: visible; }
+  .sub a { display: block; padding: 0.3rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.92rem; text-decoration: none; color: var(--ink); }
+  .sub a:hover { background: var(--cream); color: var(--orange-text); }
+  @media (max-width: 1080px) {
+    .fmenu { grid-template-columns: minmax(0, 1fr); }
+    .row > a { padding-block: 0.8rem; font-size: 1.05rem; }
+    .row > button { width: 2.8rem; }
+    .text small { display: none; }
+    .sub a { padding-block: 0.45rem; font-size: 1rem; }
+  }
+</style>

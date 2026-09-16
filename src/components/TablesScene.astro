@@ -1,0 +1,62 @@
+---
+// The floor plan editor on a laptop at the pass, and over the photo a small living floor plan: tables change status
+// as the evening goes, one event at a time, and the note under the plan says what just happened
+// (src/scripts/motion.ts, floorPlan). The markup holds one evening's snapshot; motion rewinds it and plays.
+import PhotoScene from './PhotoScene.astro';
+import type { Feature } from '../features';
+
+interface Props {
+  feature: Feature;
+}
+
+const { feature } = Astro.props;
+// The ground floor from the editor screenshot, on a 12-column grid: [label, columns, shape, status].
+const objects: [string, string, string, string][] = [
+  ['T1', '1 / 4', 'rect', ''],
+  ['T2', '4 / 7', 'rect', 'is-busy'],
+  ['T3', '7 / 9', 'circle', ''],
+  ['T4', '9 / 11', 'circle', 'is-bill'],
+  ['T5', '1 / 5', 'rect', ''],
+  ['T6', '5 / 8', 'rect', 'is-hold'],
+  ['T7', '8 / 13', 'rect', ''],
+  ['BAR-1', '1 / 3', 'object', ''],
+  ['BAR-2', '3 / 5', 'object', ''],
+];
+---
+
+<PhotoScene feature={feature} label="Buka editor denah" side="left">
+  <slot name="actions" slot="actions" />
+  <div slot="copy" class="ps-card plan" aria-hidden="true">
+    <div class="plan-head"><span>Lantai dasar · 9 objek</span><span class="plan-count"><b>2</b> terisi</span></div>
+    <div class="plan-grid">
+      {objects.map(([label, col, shape, status]) => (
+        <i class:list={['t', `t-${shape}`, status]} data-t={label} style={`grid-column: ${col}`}>{label}</i>
+      ))}
+    </div>
+    <ul class="plan-legend">
+      <li class="t">Tersedia</li><li class="t is-busy">Terisi</li><li class="t is-bill">Tagihan</li><li class="t is-hold">Ditahan</li>
+    </ul>
+    <p class="plan-note">T4 minta tagihan. Kasir menutupnya.</p>
+  </div>
+</PhotoScene>
+
+<style>
+  .plan-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); }
+  .plan-count { padding: 0.18rem 0.55rem; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: var(--white); font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
+  .plan-count b { font-variant-numeric: tabular-nums; }
+  .plan-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 2.15rem; gap: 0.35rem; margin-top: 0.8rem; }
+  /* Table shapes share the status colours with the legend. */
+  .t { display: grid; place-items: center; border: 1.5px solid var(--green); border-radius: 6px; background: rgba(1, 190, 95, 0.16); font-size: 0.66rem; font-weight: 600; font-style: normal; color: var(--white); transition: background-color 350ms var(--ease), border-color 350ms var(--ease); }
+  .t-circle { width: 2.15rem; border-radius: 50%; justify-self: center; }
+  .t-object { border: 0; background: #4a5568; color: rgba(255, 255, 255, 0.8); }
+  .t.is-busy { border-color: var(--orange); background: rgba(255, 131, 67, 0.28); }
+  .t.is-bill { border-color: var(--blue); background: rgba(105, 150, 204, 0.32); }
+  .t.is-hold { border-style: dashed; border-color: rgba(255, 255, 255, 0.55); background: rgba(255, 255, 255, 0.06); }
+  .plan-legend { display: flex; flex-wrap: wrap; gap: 0.35rem 0.7rem; margin-top: 0.7rem; font-size: 0.68rem; color: rgba(255, 255, 255, 0.6); }
+  .plan-legend .t { display: flex; align-items: center; gap: 0.35rem; border: 0; background: none; font-weight: 500; color: inherit; }
+  .plan-legend .t::before { content: ''; width: 0.6rem; height: 0.6rem; border-radius: 2px; border: 1.5px solid var(--green); background: rgba(1, 190, 95, 0.4); }
+  .plan-legend .t.is-busy::before { border-color: var(--orange); background: rgba(255, 131, 67, 0.5); }
+  .plan-legend .t.is-bill::before { border-color: var(--blue); background: rgba(105, 150, 204, 0.5); }
+  .plan-legend .t.is-hold::before { border-style: dashed; border-color: rgba(255, 255, 255, 0.55); background: none; }
+  .plan-note { min-height: 2.6em; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.14); font-size: 0.8rem; line-height: 1.3; color: rgba(255, 255, 255, 0.85); }
+</style>

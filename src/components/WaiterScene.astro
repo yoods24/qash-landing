@@ -1,0 +1,59 @@
+---
+// The waiter's phone in hand, and over the photo an order pad that replays one order being taken: each tap on the
+// phone flies an item chip into the pad, the total follows, the order goes to the kitchen, comes back ready, and is
+// delivered (src/scripts/motion.ts, orderPad). The markup holds the pad's final state; motion rewinds it and plays.
+import PhotoScene from './PhotoScene.astro';
+import type { Feature, Suite } from '../features';
+
+interface Props {
+  feature: Feature;
+  hero?: Suite;
+}
+
+const { feature, hero } = Astro.props;
+const order = [
+  { qty: 1, name: 'Cold Brew Coffee', price: 38000 },
+  { qty: 2, name: 'Hazelnut Frappe', price: 80000 },
+  { qty: 1, name: 'Honey Lemon Soda', price: 32000 },
+];
+const rp = (n: number) => `Rp${n.toLocaleString('id-ID')}`;
+const total = order.reduce((sum, o) => sum + o.price, 0);
+---
+
+<PhotoScene feature={feature} hero={hero} label="Buka aplikasi pelayan">
+  <slot name="actions" slot="actions" />
+  <div class="ps-card pad" aria-hidden="true">
+    <div class="pad-head"><span>Meja T4 · Makan di tempat</span><span class="pad-status">Selesai</span></div>
+    <ol class="pad-rows">
+      {order.map((o) => (
+        <li data-price={o.price}><span class="pad-qty">{o.qty}×</span><span class="pad-name">{o.name}</span><b>{rp(o.price)}</b></li>
+      ))}
+    </ol>
+    <div class="pad-total"><span>Total</span><b class="pad-sum">{rp(total)}</b></div>
+    <div class="pad-btn is-filled is-done"><i></i><span class="pad-btn-label">Diantar</span></div>
+  </div>
+  {/* Item chips that fly from the phone into the pad, positioned by motion.ts in the panel's coordinates. */}
+  <div class="chips" aria-hidden="true">{order.map((o) => <span class="chip">+ {o.name}</span>)}</div>
+</PhotoScene>
+
+<style>
+  .pad-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); }
+  .pad-status { padding: 0.18rem 0.55rem; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: var(--white); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; transition: background-color 300ms var(--ease), color 300ms var(--ease); }
+  .pad-status.is-prep { background: var(--orange); color: var(--ink); }
+  .pad-status.is-ready { background: var(--green); color: var(--ink); }
+  .pad-rows { margin-top: 0.7rem; font-size: 0.84rem; font-weight: 500; }
+  .pad-rows li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.5rem; padding: 0.4rem 0; border-top: 1px dashed rgba(255, 255, 255, 0.14); font-variant-numeric: tabular-nums; }
+  .pad-qty { color: var(--orange); }
+  .pad-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .pad-rows b { font-weight: 500; color: rgba(255, 255, 255, 0.8); }
+  .pad-total { display: flex; justify-content: space-between; margin-top: 0.1rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.22); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  .pad-total b { font-weight: 600; font-size: 1.05rem; }
+  .pad-btn { position: relative; margin-top: 0.85rem; padding: 0.6rem 1rem; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px; text-align: center; font-size: 0.86rem; font-weight: 600; }
+  .pad-btn i { position: absolute; inset: 0; background: var(--orange); transform-origin: left center; }
+  .pad-btn.is-done i { background: var(--green); }
+  .pad-btn-label { position: relative; display: block; color: var(--white); transition: color 250ms var(--ease); }
+  .pad-btn.is-filled .pad-btn-label { color: var(--ink); }
+
+  .chips { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+  .chip { position: absolute; left: 0; top: 0; padding: 0.35rem 0.7rem; border-radius: 999px; background: var(--white); color: var(--ink); font: 600 0.78rem var(--font-display); white-space: nowrap; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.7); opacity: 0; }
+</style>

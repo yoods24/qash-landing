@@ -1,0 +1,49 @@
+---
+// The reservation calendar on the laptop at the pass, and floating over the photo a day sheet that replays one booking: it
+// lands as new, is confirmed and its table is held for the hour, then the guest arrives (src/scripts/motion.ts,
+// bookings). The markup holds the end of the story; motion rewinds it and plays.
+import PhotoScene from './PhotoScene.astro';
+import type { Feature, Suite } from '../features';
+
+interface Props {
+  feature: Feature;
+  hero?: Suite;
+}
+
+const { feature, hero } = Astro.props;
+const bookings = [
+  { time: '14:45', name: 'Dedi Iskandar', pax: 6, status: 'Dikonfirmasi', cls: 'is-ok' },
+  { time: '16:45', name: 'Bagas Wibowo', pax: 2, status: 'Tiba', cls: 'is-in' },
+];
+---
+
+<PhotoScene feature={feature} hero={hero} label="Buka kalender reservasi" side="right">
+  <slot name="actions" slot="actions" />
+  <div class="ps-card rsv" aria-hidden="true">
+    <div class="rsv-head"><span>Rabu, 23 Sep</span><span class="rsv-count">3 reservasi</span></div>
+    <ol class="rsv-rows">
+      {bookings.map((b) => (
+        <li><b>{b.time}</b><span class="rsv-name">{b.name}<small>{b.pax} tamu</small></span><em class:list={['rsv-status', b.cls]}>{b.status}</em></li>
+      ))}
+      <li class="rsv-new"><b>19:00</b><span class="rsv-name">Rina Kusuma<small>4 tamu</small></span><em class="rsv-status is-in">Tiba</em></li>
+    </ol>
+    <div class="rsv-table is-seated"><i></i><span class="rsv-table-label">Meja T6 · terisi</span></div>
+  </div>
+</PhotoScene>
+
+<style>
+  .rsv-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); }
+  .rsv-count { padding: 0.18rem 0.55rem; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: var(--white); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+  .rsv-rows { margin-top: 0.7rem; font-size: 0.84rem; font-weight: 500; }
+  .rsv-rows li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.6rem; padding: 0.45rem 0; border-top: 1px dashed rgba(255, 255, 255, 0.14); font-variant-numeric: tabular-nums; }
+  .rsv-rows b { font-weight: 600; color: var(--orange); }
+  .rsv-name { display: grid; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .rsv-name small { font-size: 0.72rem; color: rgba(255, 255, 255, 0.55); }
+  .rsv-status { padding: 0.18rem 0.55rem; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: var(--white); font-size: 0.66rem; font-style: normal; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; transition: background-color 300ms var(--ease), color 300ms var(--ease); }
+  .rsv-status.is-new { background: var(--orange); color: var(--ink); }
+  .rsv-status.is-in { background: var(--green); color: var(--ink); }
+  .rsv-table { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid rgba(255, 255, 255, 0.22); font-size: 0.82rem; color: rgba(255, 255, 255, 0.85); }
+  .rsv-table i { width: 1rem; height: 1rem; border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 4px; transition: background-color 300ms var(--ease), border-color 300ms var(--ease); }
+  .rsv-table.is-held i { border-color: var(--orange); background: rgba(255, 131, 67, 0.35); }
+  .rsv-table.is-seated i { border-color: var(--green); background: var(--green); }
+</style>

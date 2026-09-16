@@ -1,0 +1,47 @@
+---
+// Closing band: navy ground, orange logo, one WhatsApp action, and the brand's app screens drifting beside it.
+// Pages pass a message so the chat opens on topic.
+import logotypeOrange from '../assets/brand/logotype-orange.png';
+import Photo from './Photo.astro';
+import { icons, photos } from '../features';
+import { wa, waUrl, waDisplay } from '../site';
+
+interface Props {
+  message?: string;
+}
+
+const { message } = Astro.props;
+const href = message ? wa(message) : waUrl;
+---
+
+<section class="cta">
+  <div class="container cta-inner">
+    <div class="copy" data-reveal>
+      <img src={logotypeOrange.src} width={logotypeOrange.width} height={logotypeOrange.height} alt="" loading="lazy" />
+      <h2>Siap merapikan jam ramai?</h2>
+      <p>
+        Ceritakan usaha Anda lewat WhatsApp. Kami tunjukkan Qash dengan data contoh, lalu bantu penyiapan menu, meja, dan printer
+        sampai kasir pertama jalan. Tanpa biaya bulanan, tanpa perangkat baru.
+      </p>
+      <div class="actions">
+        <a href={href} class="btn btn-primary"><span class="btn-icon" set:html={icons.whatsapp} />Chat via WhatsApp</a>
+        <span class="number">{waDisplay}</span>
+      </div>
+    </div>
+    <Photo src={photos.appScreens.src} alt="" position={photos.appScreens.position} sizes="(max-width: 860px) calc(100vw - 2.5rem), 42vw" widths={[480, 720, 960, 1280, 1725]} reveal parallax={-6} class="cta-photo" />
+  </div>
+</section>
+
+<style>
+  .cta { position: relative; overflow: clip; padding-block: clamp(3.5rem, 8vw, 6.5rem); background: var(--navy); color: var(--white); }
+  .cta-inner { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; gap: clamp(2rem, 5vw, 4.5rem); }
+  .copy img { width: 5.5rem; height: auto; margin-bottom: 1.5rem; }
+  .copy p { margin-top: 1rem; max-width: 50ch; color: rgba(255, 255, 255, 0.78); text-wrap: pretty; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem 1.25rem; margin-top: 2rem; }
+  .number { font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.04em; color: rgba(255, 255, 255, 0.7); }
+  .cta :global(.cta-photo) { height: clamp(260px, 30vw, 400px); border-radius: 22px; background: #d9dadd; }
+  @media (max-width: 860px) {
+    .cta-inner { grid-template-columns: 1fr; }
+    .cta :global(.cta-photo) { height: clamp(200px, 56vw, 300px); }
+  }
+</style>

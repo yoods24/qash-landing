@@ -1,0 +1,187 @@
+---
+// The photo scenes: a dark panel, the feature's photo with the real app screen placed exactly where it sits in the
+// photo, the copy beside it, and a vignette that replays the feature. Each scene wraps this shell with its own
+// vignette in a slot (KitchenScene, WaiterScene, TablesScene, StudioScene, ReservationScene, PosScene), or uses this
+// shell as is with only a label,
+// and src/scripts/motion.ts (photoScenes) gives each its own reveal and replay, keyed by the feature slug. Clicking
+// anywhere on the photo lifts the real screen out into the full-screen view (a ghost Frame plus data-zoom-proxy,
+// src/scripts/zoom.ts).
+//   side   which side the photo stands on; the copy takes the other. 'right' suits photos whose screen sits right of
+//          centre with a person on the left (they fade into the copy); 'left' the reverse.
+//   label  what the marker on the screen offers ("Buka papan dapur").
+//   hero   the group whose page this scene opens: the copy becomes the page's h1, lead, and whatever the page passes
+//          in the "actions" slot (jump links, buttons), and the section carries no id.
+// Slots: a vignette with the class ps-card is styled as a card. In the default slot it floats over the photo's bottom
+//        corner nearest the panel's left (and sits under the copy on phones); in the "copy" slot it sits under the
+//        copy text. Laptops fill their photos, so their cards go in "copy"; a phone leaves room for a floating one.
+import Frame from './Frame.astro';
+import Photo from './Photo.astro';
+import { plain, type Feature, type Suite } from '../features';
+
+interface Props {
+  feature: Feature;
+  label: string;
+  side?: 'left' | 'right';
+  hero?: Suite;
+}
+
+const { feature: f, label, side = 'left', hero } = Astro.props;
+const scene = f.scene!;
+const shot = f.shots[0];
+const ar = plain(scene.src);
+const s = scene.screen;
+const e = scene.extra?.screen;
+const sx = `${(s.left + s.width / 2).toFixed(1)}%`;
+const sy = `${(s.top + s.height / 2).toFixed(1)}%`;
+const box = (r: typeof s) => `left: ${r.left}%; top: ${r.top}%; width: ${r.width}%; height: ${r.height}%`;
+---
+
+<section id={hero ? undefined : f.slug} class:list={['ps', `ps-${side}`, { 'ps-hero': !!hero }]} data-photo-scene={f.slug}>
+  <div class="ps-panel">
+    <div class="ps-media" data-zoom-proxy>
+      <div class="ps-photo" style={`--ar: ${ar.width} / ${ar.height}; --sx: ${sx}; --sy: ${sy}`}>
+        <Photo src={scene.src} alt={scene.alt} sizes="(max-width: 1000px) 130vw, 60vw" widths={[720, 1080, 1536]} priority={!!hero} class="ps-img" />
+        <div class="ps-dim"></div>
+        <div class="ps-screen" style={box(s)}>
+          <Frame shot={shot} ghost sizes="40vw" eager={!!hero} />
+          <span class="ps-mark"><i></i><em>{label}</em></span>
+        </div>
+        {scene.extra && e && (
+          <div class="ps-screen" style={box(e)}>
+            <Frame shot={scene.extra.shot} ghost sizes="20vw" eager={!!hero} />
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="ps-copy">
+      {hero ? (
+        <Fragment>
+          <span class="eyebrow" data-reveal>{hero.name}</span>
+          <h1 data-split>{hero.tagline}</h1>
+          <p class="lead" data-reveal style="--d: 120ms">{hero.body}</p>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <span class="eyebrow" data-reveal>{f.name}</span>
+          <h2 data-split>{f.tagline}</h2>
+          <p data-reveal style="--d: 120ms">{f.body}</p>
+          <ul class="check-list" data-reveal style="--d: 200ms">{f.highlights.map((h) => <li>{h}</li>)}</ul>
+        </Fragment>
+      )}
+      <slot name="actions" />
+      <slot name="copy" />
+    </div>
+
+    <slot />
+  </div>
+</section>
+
+<style>
+  .ps {scroll-margin-top: 5rem; }
+  .ps-panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    min-height: clamp(520px, 52vw, 720px);
+    margin-inline: auto;
+    overflow: clip;
+    background: var(--ink);
+    color: var(--white);
+  }
+  .ps-hero .ps-panel { min-height: clamp(560px, calc(100svh - 6rem), 760px); }
+  .ps-right .ps-panel { grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr); }
+  /* Everything is placed by hand so the card can share the photo's cell. */
+  .ps-media { grid-area: 1 / 1; }
+  .ps-copy { grid-area: 1 / 2; }
+  .ps-right .ps-media { grid-area: 1 / 2; }
+  .ps-right .ps-copy { grid-area: 1 / 1; }
+
+  /* Photo column: the picture keeps its own proportions and is slid so the screen always sits at the same spot of the
+     column (--cx); the side of the room nearest the copy fades into the panel. */
+  .ps-media { position: relative; overflow: clip; cursor: zoom-in; }
+  .ps-media::after { content: ''; position: absolute; inset: 0 0 0 auto; z-index: 1; width: 28%; background: linear-gradient(270deg, var(--ink), rgba(19, 19, 19, 0)); pointer-events: none; }
+  .ps-right .ps-media::after { inset: 0 auto 0 0; width: 30%; background: linear-gradient(90deg, var(--ink), rgba(19, 19, 19, 0)); }
+  .ps-photo {
+    position: absolute;
+    top: -3%;
+    left: var(--cx, 64%);
+    height: 106%;
+    aspect-ratio: var(--ar, 3 / 2);
+    translate: calc(-1 * var(--sx)) 0;
+    transform-origin: var(--sx) var(--sy);
+    transition: scale 1.1s var(--ease);
+  }
+  .ps-right .ps-photo { --cx: 60%; }
+  /* Hover: the room dims and the picture leans in towards the screen, which stays lit. */
+  .ps-media:hover .ps-photo, .ps-media:has(.frame-zoom:focus-visible) .ps-photo { scale: 1.04; }
+  .ps-photo :global(.ps-img) { position: absolute; inset: 0; background: transparent; }
+  .ps-dim {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 12, 0.55);
+    opacity: 0;
+    transition: opacity 500ms var(--ease);
+    pointer-events: none;
+    -webkit-mask: radial-gradient(ellipse 30% 34% at var(--sx) var(--sy), transparent 0 50%, #000 100%);
+    mask: radial-gradient(ellipse 30% 34% at var(--sx) var(--sy), transparent 0 50%, #000 100%);
+  }
+  .ps-media:hover .ps-dim, .ps-media:has(.frame-zoom:focus-visible) .ps-dim { opacity: 1; }
+  /* Reveal shutters, drawn by motion.ts (tiles) and removed once they have rolled up. */
+  .ps-media :global(.ps-tiles) { position: absolute; inset: 0; z-index: 2; display: grid; grid-template: repeat(3, 1fr) / repeat(4, 1fr); pointer-events: none; }
+  .ps-media :global(.ps-tiles i) { display: block; margin: -1px; background: var(--ink); }
+  .ps-screen { position: absolute; }
+  .ps-screen :global(.frame) { position: absolute; inset: 0; }
+  .ps-screen :global(.frame img) { height: 100%; object-fit: cover; object-position: 0 0; }
+  .ps-screen :global(.frame-zoom-icon) { display: none; }
+  .ps-screen :global(.frame-zoom:focus-visible) { outline: 3px solid var(--orange); outline-offset: 6px; border-radius: 14px; }
+  /* The dot sits on the middle of the screen; the label hangs off it to the right. */
+  .ps-mark { position: absolute; left: 50%; top: 50%; z-index: 2; display: flex; align-items: center; gap: 0.6rem; translate: -9px -50%; pointer-events: none; }
+  .ps-mark i { position: relative; width: 18px; height: 18px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 3px rgba(19, 19, 19, 0.5); }
+  .ps-mark i::after { content: ''; position: absolute; inset: -4px; border: 2px solid var(--orange); border-radius: 50%; animation: ps-pulse 2.2s ease-out infinite; }
+  .ps-mark em { padding: 0.4rem 0.75rem; border-radius: 999px; background: var(--white); color: var(--ink); font: 600 0.82rem var(--font-display); white-space: nowrap; opacity: 0; translate: -6px 0; transition: opacity 300ms var(--ease), translate 300ms var(--ease); }
+  .ps-media:hover .ps-mark em, .ps-media:has(.frame-zoom:focus-visible) .ps-mark em { opacity: 1; translate: 0 0; }
+  @keyframes ps-pulse { 0% { scale: 1; opacity: 0.9; } 100% { scale: 2.6; opacity: 0; } }
+  @media (hover: none) { .ps-mark em { opacity: 1; translate: 0 0; } }
+  @media (prefers-reduced-motion: reduce) { .ps-mark i::after { animation: none; } }
+
+  .ps-copy { position: relative; z-index: 2; align-self: center; padding: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 4.5vw, 5rem) clamp(2.5rem, 5vw, 5rem) clamp(1rem, 2.5vw, 2.5rem); }
+  .ps-right .ps-copy { padding-inline: clamp(1.5rem, 4.5vw, 5rem) clamp(1rem, 2.5vw, 2.5rem); }
+  .ps-copy .eyebrow { color: var(--orange); }
+  .ps-copy h1, .ps-copy h2 { color: var(--white); font-size: clamp(2.2rem, 4.2vw, 3.6rem); }
+  .ps-copy p { margin-top: 1.25rem; max-width: 44ch; color: rgba(255, 255, 255, 0.74); text-wrap: pretty; }
+  .ps-copy .lead { max-width: 46ch; color: rgba(255, 255, 255, 0.74); }
+  .ps-copy .check-list { margin-top: 1.5rem; color: rgba(255, 255, 255, 0.9); }
+
+  /* The card: the size of a real ticket. Under the copy it is a quiet panel; over the photo it turns to glass. */
+  .ps-copy :global(.ps-card) { width: min(100%, 22rem); margin-top: 2rem; padding: 0.9rem 1rem 1rem; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; background: rgba(255, 255, 255, 0.06); font-family: var(--font-display); }
+  .ps-panel > :global(.ps-card) {
+    grid-area: 1 / 1;
+    align-self: end;
+    justify-self: start;
+    z-index: 3;
+    width: 18rem;
+    margin: clamp(1rem, 2.4vw, 2rem);
+    padding: 0.9rem 1rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    background: rgba(19, 19, 19, 0.78);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.9);
+    font-family: var(--font-display);
+    pointer-events: none;
+  }
+  .ps-right .ps-panel > :global(.ps-card) { grid-area: 1 / 2; }
+
+  @media (max-width: 1000px) {
+    .ps-panel, .ps-right .ps-panel, .ps-hero .ps-panel { grid-template-columns: minmax(0, 1fr); min-height: 0; border-radius: 22px; }
+    .ps-media, .ps-right .ps-media { grid-area: 1 / 1; aspect-ratio: 4 / 3; margin: 0.6rem 0.6rem 0; border-radius: 16px; }
+    .ps-media::after { display: none; }
+    .ps-copy, .ps-right .ps-copy { grid-area: 2 / 1; padding: 2rem 1.4rem 1.5rem; }
+    .ps-panel > :global(.ps-card), .ps-right .ps-panel > :global(.ps-card) { grid-area: 3 / 1; justify-self: stretch; width: auto; margin: 0 1.4rem 1.6rem; }
+    /* The screen sits in the middle of the narrow photo, and its label hangs under the dot so it never runs off the edge. */
+    .ps-photo, .ps-right .ps-photo { --cx: 50%; }
+    .ps-mark { flex-direction: column; gap: 0.5rem; translate: -50% -9px; }
+  }
+</style>

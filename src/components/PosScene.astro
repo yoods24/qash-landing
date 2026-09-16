@@ -1,0 +1,54 @@
+---
+// The cashier's tablet in the photo (and the waiter's phone beside it), and floating over the photo the register's
+// receipt printing one sale: lines print as the cashier taps, the total follows, cash lands, the change is counted,
+// and the sale closes (src/scripts/motion.ts, register). The markup holds the closed sale; motion rewinds it and plays.
+import PhotoScene from './PhotoScene.astro';
+import type { Feature, Suite } from '../features';
+
+interface Props {
+  feature: Feature;
+  hero?: Suite;
+}
+
+const { feature, hero } = Astro.props;
+const lines = [
+  { qty: 1, name: 'Iced Americano Bottle', price: 28000 },
+  { qty: 2, name: 'Honey Lemon Soda', price: 64000 },
+  { qty: 1, name: 'Signature Ceramic Mug', price: 95000 },
+];
+const rp = (n: number) => `Rp${n.toLocaleString('id-ID')}`;
+const total = lines.reduce((sum, l) => sum + l.price, 0);
+const cash = 200000;
+---
+
+<PhotoScene feature={feature} hero={hero} label="Buka layar kasir">
+  <slot name="actions" slot="actions" />
+  <div class="ps-card reg" aria-hidden="true">
+    <div class="reg-head"><span>Register 1 · Bawa pulang</span><span class="reg-status is-paid">Lunas</span></div>
+    <ol class="reg-rows">
+      {lines.map((l) => (
+        <li data-price={l.price}><span class="reg-qty">{l.qty}×</span><span class="reg-name">{l.name}</span><b>{rp(l.price)}</b></li>
+      ))}
+    </ol>
+    <div class="reg-total"><span>Total</span><b class="reg-sum">{rp(total)}</b></div>
+    <div class="reg-tender" data-cash={cash}><span>Tunai</span><b>{rp(cash)}</b></div>
+    <div class="reg-change"><span>Kembalian</span><b class="reg-back">{rp(cash - total)}</b></div>
+  </div>
+</PhotoScene>
+
+<style>
+  .reg-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); }
+  .reg-status { padding: 0.18rem 0.55rem; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: var(--white); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; transition: background-color 300ms var(--ease), color 300ms var(--ease); }
+  .reg-status.is-paid { background: var(--green); color: var(--ink); }
+  .reg-rows { margin-top: 0.7rem; font-size: 0.84rem; font-weight: 500; }
+  .reg-rows li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.5rem; padding: 0.4rem 0; border-top: 1px dashed rgba(255, 255, 255, 0.14); font-variant-numeric: tabular-nums; }
+  .reg-qty { color: var(--orange); }
+  .reg-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .reg-rows b { font-weight: 500; color: rgba(255, 255, 255, 0.8); }
+  .reg-total, .reg-tender, .reg-change { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+  .reg-total { margin-top: 0.1rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.22); font-size: 0.9rem; }
+  .reg-total b { font-weight: 600; font-size: 1.05rem; }
+  .reg-tender, .reg-change { margin-top: 0.45rem; font-size: 0.82rem; color: rgba(255, 255, 255, 0.7); }
+  .reg-tender b, .reg-change b { font-weight: 500; color: rgba(255, 255, 255, 0.9); }
+  .reg-change b { color: var(--green); }
+</style>

@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { suites } from '../features';
+---
+
+<Layout title="Halaman tidak ditemukan — Qash" description="Halaman yang Anda cari tidak ada di situs Qash.">
+  <section class="section nf">
+    <div class="container">
+      <span class="eyebrow">404</span>
+      <h1>Halaman ini tidak ada.</h1>
+      <p class="lead">Mungkin tautannya berubah. Mulai lagi dari beranda, atau langsung ke bagian yang Anda cari.</p>
+      <ul class="links">
+        <li><a href="/" class="btn btn-primary">Ke beranda</a></li>
+        {suites.map((s) => <li><a href={`/fitur/${s.slug}`} class="btn btn-ghost">{s.name}</a></li>)}
+        <li><a href="/harga" class="btn btn-ghost">Harga</a></li>
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .nf { min-height: 60vh; }
+  .nf h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
+  .lead { margin-top: 1.25rem; max-width: 46ch; }
+  .links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
+</style>

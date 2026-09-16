@@ -1,0 +1,208 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Frame from '../components/Frame.astro';
+import Photo from '../components/Photo.astro';
+import Cta from '../components/Cta.astro';
+import { businessTypes, shots, typePhotos } from '../features';
+import { wa } from '../site';
+
+const waMessage = 'Halo Qash, saya ingin tahu profil yang pas untuk usaha saya.';
+
+// A type with a photo (typePhotos) shows that; the others show one screen.
+const detail: Record<string, { profile: string; who: string; flow: string[]; modules: string[]; off?: string; shot?: (typeof shots)[keyof typeof shots] }> = {
+  'kedai-kopi': {
+    profile: 'Restoran layanan cepat',
+    who: 'Warung kopi, kedai minuman, dan kios makanan cepat dengan satu counter.',
+    flow: ['Pesanan dibuat di kasir', 'Bar menyiapkan dari layar dapur', 'Nomor dipanggil di papan antrean', 'Selesai di counter'],
+    modules: ['Kasir & register', 'Layar dapur satu stasiun', 'Papan nomor antrean dan layar pelanggan', 'Bahan & stok dengan resep', 'Absensi dari ponsel'],
+    off: 'Aplikasi pelayan dan denah meja tidak perlu dinyalakan.',
+  },
+  'kafe-bakery': {
+    profile: 'Restoran layanan penuh atau cepat',
+    who: 'Kafe dengan meja, bakery dengan produksi harian, dan tempat yang menjalankan keduanya.',
+    flow: ['Tamu duduk atau memindai QR meja', 'Dapur dan bar menyiapkan per stasiun', 'Pelayan mengantar, atau tamu mengambil di counter', 'Bayar di kasir'],
+    modules: ['Denah meja & QR', 'Layar dapur per stasiun', 'Add-on produk: extra shot, sirup, topping', 'Produksi untuk roti dan kue harian', 'Promo dan kode promo'],
+    shot: shots.floorPlan,
+  },
+  restoran: {
+    profile: 'Restoran layanan penuh',
+    who: 'Rumah makan dan restoran dengan pelayan, beberapa stasiun dapur, dan tamu yang memesan tempat.',
+    flow: ['Pelayan mencatat di samping meja', 'Tiket terbagi ke dapur dan bar', 'Pelayan mengantar saat siap', 'Kasir menutup dengan PB1 dan biaya layanan'],
+    modules: ['Aplikasi pelayan', 'Denah meja & reservasi', 'Layar dapur per stasiun', 'Pajak, PB1, dan biaya layanan', 'Stok, resep, dan pembelian', 'HRM lengkap dengan payroll'],
+  },
+  'bar-lounge': {
+    profile: 'Restoran layanan penuh',
+    who: 'Bar, lounge, dan tempat yang baru ramai setelah jam sembilan malam.',
+    flow: ['Tab dibuka per meja, atau per tamu lewat QR sesi', 'Stasiun bar menyiapkan', 'Pelayan mengantar', 'Tutup tab, lalu tutup register di akhir hari bisnis'],
+    modules: ['QR sesi yang dicetak kasir per tamu', 'Layar dapur untuk stasiun bar', 'Promo per periode untuk happy hour', 'Hari bisnis yang bisa lewat tengah malam', 'Roster untuk shift malam'],
+  },
+  'food-court': {
+    profile: 'Restoran layanan cepat',
+    who: 'Kios di food court dan tempat dengan antrean panjang tanpa meja sendiri.',
+    flow: ['Pesanan dibuat di kasir atau lewat tautan', 'Dapur menyiapkan', 'Nomor dipanggil di papan antrean', 'Diambil di counter'],
+    modules: ['Kasir dengan bawa pulang dan ambil sendiri', 'Papan nomor antrean dengan bunyi saat siap', 'Pesan via tautan tanpa meja', 'Layar dapur', 'Laporan per outlet'],
+    shot: shots.posMobile,
+  },
+  ritel: {
+    profile: 'Kasir ritel, atau ritel di dalam kafe',
+    who: 'Toko oleh-oleh, biji kopi, dan merchandise yang dijual di kasir yang sama dengan minuman.',
+    flow: ['Produk ritel dan menu di satu layar kasir', 'Stok per unit terpotong saat terjual', 'Bawa pulang tanpa dapur'],
+    modules: ['Kategori ritel di samping menu', 'Stok produk per unit', 'Laporan nilai stok dan barang mati', 'Promo per produk'],
+    shot: shots.reportInventory,
+  },
+  'multi-outlet': {
+    profile: 'Profil berbeda per outlet',
+    who: 'Jaringan dengan beberapa cabang, gudang pusat, dan pemilik yang ingin melihat semuanya dari satu tempat.',
+    flow: ['Tiap outlet punya profil, denah, dan stok sendiri', 'Gudang mengirim stok lewat transfer', 'Staf ditugaskan ke lebih dari satu outlet', 'Pemilik melihat semua outlet dari satu dashboard'],
+    modules: ['Outlet dan gudang', 'Transfer stok antar outlet', 'Dashboard pemilik untuk semua outlet', 'Laporan per outlet atau gabungan'],
+    shot: shots.attendanceSummary,
+  },
+};
+
+const types = businessTypes.map((b) => ({ ...b, ...detail[b.slug] }));
+---
+
+<Layout
+  title="Jenis usaha — Qash"
+  description="Kedai kopi, kafe, restoran, bar, food court, ritel, sampai jaringan multi-outlet. Setiap outlet memilih profilnya dan Qash menyalakan modul yang perlu saja."
+  wa={waMessage}
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow" data-reveal>Jenis usaha</span>
+      <h1 data-split>Untuk usaha kuliner seperti apa?</h1>
+      <p class="lead" data-reveal style="--d: 160ms">
+        Modulnya sama untuk semua, yang beda adalah mana yang menyala. Setiap outlet memilih satu profil, dan Qash menyusun
+        alur kasir, dapur, dan meja mengikuti profil itu.
+      </p>
+      <p class="profiles" data-reveal style="--d: 240ms">
+        Ada tiga profil. <strong>Restoran layanan penuh</strong> menyalakan pelayan, denah meja, layar dapur, dan semua jenis layanan. <strong>Restoran layanan cepat</strong> berarti pesan di kasir, dapur menyiapkan, selesai di counter, tanpa pelayan dan denah meja. <strong>Kasir ritel</strong> menjual di counter dengan satu alur bawa pulang. Profil bisa berbeda untuk tiap outlet.
+      </p>
+      {/* On phones the side nav below is hidden, so the hero carries the jump chips instead. */}
+      <ul class="jump" aria-label="Lompat ke jenis usaha" data-reveal style="--d: 320ms">
+        {types.map((t) => <li><a href={`#${t.slug}`}><span class="icon" set:html={t.icon} />{t.name}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <div class="container layout">
+    <nav class="side" aria-label="Jenis usaha">
+      <ul>
+        {types.map((t) => <li><a href={`#${t.slug}`}>{t.name}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="list">
+      {types.map((t) => (
+        <article id={t.slug} class="type" data-reveal>
+          <div class="type-head">
+            <span class="icon" set:html={t.icon} />
+            <div>
+              <span class="profile">{t.profile}</span>
+              <h2>{t.name}</h2>
+              <p>{t.who}</p>
+            </div>
+          </div>
+          <div class="type-grid">
+            <div class="cols">
+              <div>
+                <h3>Alurnya</h3>
+                <ol class="flow">{t.flow.map((s) => <li>{s}</li>)}</ol>
+              </div>
+              <div>
+                <h3>Yang menyala</h3>
+                <ul class="check-list">{t.modules.map((m) => <li>{m}</li>)}</ul>
+                {t.off && <p class="off">{t.off}</p>}
+              </div>
+            </div>
+            {typePhotos[t.slug] ? (
+              <div class="shot">
+                <Photo src={typePhotos[t.slug].src} alt={typePhotos[t.slug].alt} position={typePhotos[t.slug].position} sizes="(max-width: 900px) calc(100vw - 2.5rem), 34vw" reveal parallax={6} class="shot-photo" />
+              </div>
+            ) : (
+              t.shot && <div class="shot"><Frame shot={t.shot} sizes="(max-width: 900px) 100vw, 40vw" /></div>
+            )}
+          </div>
+          <p class="ask-type"><a href={wa(`Halo Qash, saya punya ${t.name.toLowerCase()} dan ingin lihat demo.`)} class="text-link arrow">Tanya soal {t.name.toLowerCase()} lewat WhatsApp</a></p>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <section class="section ask">
+    <div class="container ask-inner" data-reveal>
+      <h2>Usaha Anda tidak persis seperti salah satunya?</h2>
+      <p>Hampir selalu begitu. Ceritakan alurnya lewat WhatsApp, kami tunjukkan profil dan modul yang paling pas.</p>
+      <a href={wa(waMessage)} class="btn btn-navy">Ceritakan usaha Anda</a>
+    </div>
+  </section>
+
+  <Cta message={waMessage} />
+</Layout>
+
+<style>
+  .page-hero { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2rem, 5vw, 3.5rem); background: linear-gradient(180deg, var(--cream) 0%, var(--white) 100%); }
+  .page-hero h1 { max-width: 16ch; }
+  .page-hero .lead { margin-top: 1.25rem; max-width: 52ch; }
+  .profiles { margin-top: 2rem; max-width: 62ch; color: var(--muted); text-wrap: pretty; }
+  .profiles strong { color: var(--ink); }
+  .page-hero .jump { margin-top: 1.75rem; }
+  @media (min-width: 901px) { .page-hero .jump { display: none; } }
+  .ask-type { margin-top: 1.5rem; }
+
+  .layout { display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); padding-block: clamp(2rem, 5vw, 3.5rem); }
+  .side { position: sticky; top: 6rem; align-self: start; }
+  .side ul { display: grid; gap: 0.15rem; border-left: 2px solid var(--line); }
+  .side a { display: block; margin-left: -2px; padding: 0.4rem 0 0.4rem 1rem; border-left: 2px solid transparent; font-size: 0.92rem; font-weight: 700; color: var(--muted); text-decoration: none; transition: color 200ms, border-color 200ms; }
+  .side a:hover, .side a.current { color: var(--ink); border-left-color: var(--orange); }
+
+  .type { padding-block: clamp(2rem, 4vw, 3rem); border-top: 1px solid var(--line); scroll-margin-top: 6rem; }
+  .type:first-child { border-top: 0; padding-top: 0; }
+  .type-head { display: grid; grid-template-columns: 2.5rem 1fr; gap: 1rem; }
+  .type-head .icon { width: 2.5rem; height: 2.5rem; padding: 0.5rem; border-radius: 12px; background: var(--orange-tint); }
+  .profile { display: inline-block; margin-bottom: 0.5rem; font-family: var(--font-display); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange-text); }
+  .type-head p { margin-top: 0.5rem; max-width: 56ch; color: var(--muted); }
+  .type-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: center; margin-top: 1.75rem; }
+  .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+  .cols h3 { margin-bottom: 0.75rem; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .flow { display: grid; gap: 0.6rem; counter-reset: step; }
+  .flow li { position: relative; padding-left: 2rem; counter-increment: step; }
+  .flow li::before { content: counter(step); position: absolute; left: 0; top: 0.15em; display: grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--navy); color: var(--white); font-family: var(--font-display); font-size: 0.72rem; font-weight: 600; }
+  .off { margin-top: 0.9rem; font-size: 0.9rem; color: var(--muted); }
+  .shot :global(.frame-phone) { width: min(55%, 14rem); margin-inline: auto; }
+  /* A photo of the kind of place. */
+  .shot :global(.shot-photo) { aspect-ratio: 4 / 3; border-radius: 18px; }
+
+  .ask { background: var(--cream); }
+  .ask-inner { max-width: 44rem; text-align: center; }
+  .ask p { margin: 1rem auto 1.75rem; max-width: 46ch; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .side { display: none; }
+    .type-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .cols { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  // Highlight the business type in view in the side nav.
+  function init() {
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.side a'));
+    const types = document.querySelectorAll<HTMLElement>('.type');
+    if (!links.length || !types.length || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          links.forEach((a) => a.classList.toggle('current', a.getAttribute('href') === `#${entry.target.id}`));
+        }
+      },
+      { rootMargin: '-30% 0px -60% 0px', threshold: 0 },
+    );
+    types.forEach((t) => io.observe(t));
+  }
+  document.addEventListener('astro:page-load', init);
+</script>

@@ -1,17 +1,458 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Frame from '../components/Frame.astro';
+import Photo from '../components/Photo.astro';
+import Faq from '../components/Faq.astro';
+import Cta from '../components/Cta.astro';
+import { scenes } from '../components/scenes';
+import { suites, shots, businessTypes, icons, photos } from '../features';
+import { waUrl } from '../site';
 
+// Every module that exists in Qash today; rendered twice for the seamless marquee.
+// The carousel: every feature told by a photo scene, the ones with a replaying vignette first.
+const showcase = ['pelayan', 'layar-dapur', 'kasir', 'reservasi', 'denah-meja', 'design-studio', 'analitik-stok', 'promo-dasar', 'rekap-kehadiran'].map((slug) => {
+  const suite = suites.find((s) => s.features.some((f) => f.slug === slug))!;
+  return { suite, feature: suite.features.find((f) => f.slug === slug)!, ...scenes[slug] };
+});
+
+const modules = [
+  'Kasir & register', 'Layar pelanggan', 'Papan nomor antrean', 'Aplikasi pelayan', 'Layar dapur', 'Denah meja', 'QR meja',
+  'Reservasi', 'Pesan online', 'Website brand', 'Bahan & stok', 'Resep & HPP', 'Produksi', 'Pembelian & pemasok', 'Stock opname',
+  'Transfer antar outlet', 'Promo & kode promo', 'Laporan', 'Multi-outlet', 'Absensi', 'Roster & tukar shift', 'Cuti & lembur',
+  'Payroll & kasbon', 'Rekrutmen & halaman karier', 'Pajak & biaya layanan', 'Peran & izin',
+];
+
+
+const faqs: { q: string; a: string }[] = [
+  { q: 'Qash cocok untuk usaha apa?', a: 'Usaha kuliner di Indonesia: kedai kopi, warung, kafe, bakery, restoran, bar, food court, sampai jaringan beberapa outlet. Setiap outlet memilih profil, yaitu restoran layanan penuh, layanan cepat, atau kasir ritel, dan Qash mengaktifkan modul yang sesuai.' },
+  { q: 'Berapa biayanya?', a: 'Rp1.000 per transaksi yang selesai. Tidak ada biaya bulanan, lisensi perangkat, atau biaya per pengguna. Secara bawaan biaya itu tampil di struk pelanggan sebagai Biaya Platform (Qash). Anda juga bisa memilih menanggungnya sendiri.' },
+  { q: 'Perlu perangkat khusus?', a: 'Tidak. Kasir, layar dapur, aplikasi pelayan, dan back office berjalan di browser tablet, laptop, PC, atau ponsel yang sudah Anda punya. Struk dan tiket dapur dicetak ke printer thermal lewat aplikasi stasiun cetak, sedangkan layar pelanggan dan papan nomor antrean jalan di layar mana pun.' },
+  { q: 'Tamu bisa pesan dan bayar sendiri?', a: 'Bisa. Tamu memindai QR di meja atau membuka tautan pemesanan, menyusun pesanan, lalu membayar di kasir atau secara online saat pembayaran digital aktif di outlet Anda. Pesanannya masuk ke daftar yang sama dengan pesanan kasir.' },
+  { q: 'Bisa untuk lebih dari satu outlet?', a: 'Bisa. Setiap outlet punya denah meja, stok, pengaturan, dan hari operasional sendiri. Staf bisa ditugaskan ke lebih dari satu outlet, stok dipindah lewat transfer, dan dashboard pemilik serta laporan merangkum semua outlet.' },
+  { q: 'Bahasa apa yang didukung?', a: 'Bahasa Indonesia dan Inggris. Tiap staf memilih bahasanya sendiri.' },
+  { q: 'Bagaimana cara mulai?', a: 'Chat kami di WhatsApp. Kami tunjukkan Qash dengan data contoh, lalu bantu penyiapan menu, meja, dan printer sampai kasir pertama jalan.' },
+];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout
+  title="Qash — Sistem operasional F&B lengkap untuk kedai, kafe, dan restoran"
+  description="Kasir, dapur, stok, pembelian, sampai payroll dalam satu sistem di browser untuk usaha kuliner. Gratis untuk pemilik usaha: Rp1.000 per transaksi, bisa masuk ke struk pelanggan."
+>
+  <section class="vh">
+    <div class="vh-panel">
+      <div class="vh-copy">
+        <span class="eyebrow vh-eyebrow" data-reveal>Qash hadir dengan</span>
+        <div class="vh-title">
+          <h1 data-split>Sistem operasional<br />F&amp;B <em class="vh-mark">lengkap.</em></h1>
+          {/* Qash's own mark under the promise: the tail curve of the logo, drawn in by src/scripts/motion.ts. */}
+          <svg class="swoosh" viewBox="0 0 300 44" preserveAspectRatio="none" aria-hidden="true"><path d="M5 33C62 34 118 29 172 19C204 13 234 8 256 11C274 14 287 23 295 38" /></svg>
+        </div>
+
+        <div class="actions" data-reveal style="--d: 240ms">
+          <a href={waUrl} class="btn btn-primary"><span class="btn-icon" set:html={icons.whatsapp} />Jadwalkan demo</a>
+          <a href="#harga" class="btn btn-ghost-light">Lihat harganya</a>
+        </div>
+        <ul class="hero-facts" data-reveal style="--d: 320ms">
+          <li>Tanpa langganan</li>
+          <li>Tanpa instalasi</li>
+          <li>Bahasa Indonesia &amp; Inggris</li>
+        </ul>
+      </div>
+
+      <div class="vh-media">
+        <Photo
+          src={photos.driveThru.src}
+          alt={photos.driveThru.alt}
+          position={photos.driveThru.position}
+          sizes="(max-width: 900px) calc(100vw - 2.5rem), 46vw"
+          priority
+          parallax={5}
+          class="vh-photo"
+        />
+        <p class="vh-tag" aria-label="Jenis layanan di kasir Qash"><span>Makan di tempat</span><span>Bawa pulang</span><span>Drive-thru</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="marquee" aria-label="Modul yang tersedia di Qash">
+    <ul>
+      {modules.map((m) => <li>{m}</li>)}
+      {modules.map((m) => <li aria-hidden="true">{m}</li>)}
+    </ul>
+  </section>
+
+  <section class="section amp" aria-labelledby="amp-title">
+    <div class="container">
+      <div class="amp-grid">
+        <div class="amp-type">
+          <span class="eyebrow" data-reveal>Satu sistem, banyak momen</span>
+          <h2 id="amp-title" class="amp-title" data-split>Yang ramai di depan, tercatat di belakang.</h2>
+        </div>
+        <a class="amp-tile amp-coffee" href="/fitur/design-studio#pesan-online">
+          <Photo src={photos.coffee.src} alt={photos.coffee.alt} position={photos.coffee.position} sizes="(max-width: 900px) 100vw, 34vw" parallax={6} />
+          <span class="amp-cap">Tamu pesan dari ponselnya sendiri</span>
+        </a>
+        <a class="amp-block amp-blue" href="/harga">
+          <strong>Rp1.000</strong>
+          <span>per transaksi. Tanpa biaya bulanan.</span>
+        </a>
+        <a class="amp-tile amp-bar" href="/jenis-usaha#bar-lounge">
+          <Photo src={photos.bar.src} alt={photos.bar.alt} position={photos.bar.position} sizes="(max-width: 900px) 50vw, 25vw" parallax={7} />
+          <span class="amp-cap">Buka sampai lewat tengah malam</span>
+        </a>
+        <div class="amp-block amp-navy">
+          <p>Kasir, dapur, stok, dan tim bekerja dari data yang sama. Yang di depan tetap hangat karena urusan belakang sudah beres.</p>
+          <a href="#harga" class="amp-link">Lihat harganya</a>
+        </div>
+        <a class="amp-tile amp-book" href="/fitur/inventaris#stok-produk-bahan">
+          <Photo src={photos.book.src} alt={photos.book.alt} position={photos.book.position} sizes="(max-width: 900px) 50vw, 25vw" parallax={5} />
+          <span class="amp-cap">Stok, resep, dan HPP tercatat rapi</span>
+        </a>
+        <a class="amp-tile amp-fabric" href="/fitur/kehadiran#absensi">
+          <Photo src={photos.phoneFabric.src} alt={photos.phoneFabric.alt} position={photos.phoneFabric.position} sizes="(max-width: 900px) 40vw, 17vw" parallax={6} />
+          <span class="amp-cap">Absen dari ponsel</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="harga" class="section section-cream price">
+    <div class="container">
+      <div class="price-head">
+      <span class="eyebrow" data-reveal>Harga</span>
+      {/* The price line: first the prices the market is used to, each struck out as it lands, then the number drops to
+          1.000 and the thousands fold into a k (src/scripts/motion.ts, pricing). The markup is the finished line for
+          readers without motion. */}
+      <h2 class="price-line" aria-label="Hanya dengan Rp1.000 per transaksi.">
+        <span class="price-lead">Hanya dengan</span>
+        <span class="price-tag"><small>Rp</small><span class="price-n">1</span><span class="price-thou" hidden>.000</span><span class="price-k">k</span><i class="price-strike" aria-hidden="true"></i></span>
+        <span class="price-per">/transaksi</span>
+      </h2>
+      </div>
+      {/* Three receipt slips, printed one after another (src/scripts/motion.ts, pricing): what is included, who
+          carries the Rp1.000, and what is never charged. */}
+      <ul class="price-cards">
+        <li class="price-card slip card">
+          <h3>Termasuk seluruh fitur.</h3>
+          <p>Anda yang mengatur sesuai kebutuhan.</p>
+          <ul class="price-chips" aria-label="Sebelas bagian Qash">{suites.map((s) => <li>{s.name}</li>)}</ul>
+        </li>
+        <li class="price-card slip card">
+          <h3>Bisa dibebankan ke pelanggan.</h3>
+          {/* Who carries the Rp1.000: Pelanggan prints the fee line onto the sample receipt, Anda scatters it off
+              (src/scripts/motion.ts, feeToggle). */}
+          <div class="price-who">
+            <span>Rp1.000 ditanggung</span>
+            <div class="seg" data-who="pelanggan">
+              <button type="button" aria-pressed="true" data-who="pelanggan">Pelanggan</button>
+              <button type="button" aria-pressed="false" data-who="anda">Anda</button>
+              <i class="seg-thumb" aria-hidden="true"></i>
+            </div>
+          </div>
+          <dl class="price-receipt" aria-label="Contoh struk pelanggan">
+            <div><dt>Kopi susu × 2</dt><dd>44.000</dd></div>
+            <div class="fee"><dt>Biaya Platform (Qash)</dt><dd>1.000</dd></div>
+            <div class="total"><dt>Total</dt><dd class="price-total" data-with="45000" data-without="44000">Rp 45.000</dd></div>
+          </dl>
+          <p class="price-who-note" aria-live="polite">Pelanggan membayar Rp1.000 di struknya. Usaha Anda di Rp0.</p>
+        </li>
+        <li class="price-card slip card">
+          <h3>Tidak ada biaya tambahan.</h3>
+          <p>Yang tidak pernah Anda bayar ke Qash:</p>
+          <dl class="price-receipt price-zero" aria-label="Biaya yang tidak ada">
+            <div><dt>Biaya setup</dt><dd>0</dd></div>
+            <div><dt>Langganan bulanan</dt><dd>0</dd></div>
+            <div><dt>Lisensi per perangkat</dt><dd>0</dd></div>
+            <div><dt>Add-on fitur</dt><dd>0</dd></div>
+            <div class="total"><dt>Total</dt><dd><span class="price-zero-total">Rp 0</span></dd></div>
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section showcase" aria-labelledby="showcase-title">
+    <div class="container section-head">
+      <span class="eyebrow" data-reveal>Di lapangan</span>
+      <h2 id="showcase-title" data-split>Lihat Qash bekerja di jam ramai.</h2>
+      <p data-reveal style="--d: 120ms">Setiap layar di bawah ini layar asli Qash, di tempat ia dipakai. Klik fotonya untuk membuka layarnya.</p>
+    </div>
+    {/* A scroll-snap track of the photo scenes, each with its own replay; src/scripts/motion.ts (showcase) advances it
+        and wires the arrows and dots. */}
+    <div class="carousel" data-carousel>
+      <div class="track" tabindex="0" aria-roledescription="carousel" aria-label="Fitur Qash di lapangan">
+        {showcase.map(({ Scene, props, feature, suite }, i) => (
+          <div class="slide" aria-roledescription="slide" aria-label={`${i + 1} dari ${showcase.length}`}>
+            <Scene feature={feature} {...props}>
+              <a slot="actions" class="text-link arrow slide-link" href={`/fitur/${suite.slug}#${feature.slug}`}>Lihat {suite.name.toLowerCase()}</a>
+            </Scene>
+          </div>
+        ))}
+      </div>
+      {/* Thin dashes over the bottom-right corner: the current slide's is orange, a hovered one lights up (class active). */}
+      <ol class="dots" aria-label="Pilih slide">
+        {showcase.map(({ feature }, i) => <li><button type="button" data-to={i} aria-label={feature.name} aria-current={i === 0 ? 'true' : 'false'}></button></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section-cream types">
+    <div class="container">
+      <header class="section-head">
+        <span class="eyebrow" data-reveal>Jenis usaha</span>
+        <h2 data-split>Untuk usaha kuliner seperti apa?</h2>
+        <p data-reveal style="--d: 120ms">Setiap outlet memilih profilnya, dan Qash menyalakan modul yang perlu saja. Pilih yang paling dekat dengan usaha Anda.</p>
+      </header>
+      <ul class="type-grid">
+        {businessTypes.map((b, i) => (
+          <li data-reveal style={`--d: ${i * 60}ms`}>
+            <a href={`/jenis-usaha#${b.slug}`} class="type-card card">
+              <span class="icon" set:html={b.icon} />
+              <strong>{b.name}</strong>
+              <span>{b.short}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="faq" class="section section-paper">
+    <div class="container faq-inner">
+      <header class="section-head">
+        <span class="eyebrow" data-reveal>FAQ</span>
+        <h2 data-split>Yang sering ditanyakan pemilik usaha.</h2>
+      </header>
+      <div data-reveal><Faq items={faqs} /></div>
+    </div>
+  </section>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+
+  <Cta />
+</Layout>
+
+
+<style>
+  /* ── Hero: a dark photo panel, like a printed brand spread ── */
+  .vh-panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    min-height: clamp(560px, calc(100svh - 6rem), 800px);
+    margin-inline: auto;
+    overflow: clip;
+    background: var(--ink);
+    color: var(--white);
+    transform-origin: 50% 0;
+  }
+  .vh-copy { position: relative; z-index: 2; align-self: center; padding: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 5vw, 5.5rem); }
+  .vh-eyebrow { color: var(--orange); }
+  .vh-title { position: relative; }
+  h1 { font-size: clamp(2.6rem, 5.2vw, 4.7rem); color: var(--white); }
+  .vh-mark { font-style: normal; }
+  .swoosh { position: absolute; left: 3.7em; top: 2.05em; width: 4.4em; height: 0.42em; overflow: visible; font-size: clamp(2.6rem, 5.2vw, 4.7rem); pointer-events: none; }
+  .swoosh path { fill: none; stroke: var(--orange); stroke-width: 5; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .lead { margin-top: 1.6rem; max-width: 44ch; color: rgba(255, 255, 255, 0.74); }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+  .hero-facts { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 1.75rem; font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); }
+  .hero-facts li { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .hero-facts li::before { content: ''; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--orange); }
+
+  .vh-media { position: relative; }
+  .vh-media :global(.vh-photo) { position: absolute; inset: 0; background: #1d1d1d; }
+  /* The photo's own dark left edge melts into the panel. */
+  .vh-media::before { content: ''; position: absolute; inset: 0 auto 0 0; z-index: 1; width: 26%; background: linear-gradient(90deg, var(--ink), rgba(19, 19, 19, 0)); pointer-events: none; }
+  .vh-tag { position: absolute; right: 1.25rem; bottom: 1.25rem; z-index: 2; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.4rem; margin: 0; }
+  .vh-tag span { padding: 0.38rem 0.75rem; border-radius: 999px; background: rgba(19, 19, 19, 0.78); color: var(--white); font-family: var(--font-display); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.02em; }
+  /* Until the intro plays, the photo waits behind its wipe; it shows on its own if the script never runs. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .vh-media { clip-path: inset(0 0 0 100%); animation: vh-safety 0s linear 2.5s forwards; }
+    :global(html.js) .swoosh, :global(html.js) .vh-tag span { opacity: 0; animation: vh-safety 0s linear 2.5s forwards; }
+    @keyframes vh-safety { to { clip-path: none; opacity: 1; } }
+  }
+
+  /* ── Collage: brand photography, colour blocks, big type (guideline F3 Visual Amplification) ── */
+  .amp-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: repeat(4, clamp(118px, 12vw, 172px));
+    grid-template-areas:
+      't t t t t c c c c b b b'
+      't t t t t c c c c r r r'
+      'n n n n k k k f f r r r'
+      'n n n n k k k f f r r r';
+    gap: 12px;
+  }
+  .amp-type { grid-area: t; position: relative; align-self: center; padding-right: 1rem; }
+  .amp-type::after { content: ''; position: absolute; left: 0; bottom: -1rem; width: 4.5rem; height: 6px; border-radius: 6px; background: var(--orange); }
+  .amp-title { font-size: clamp(2.2rem, 4.6vw, 4rem); line-height: 0.98; letter-spacing: -0.03em; color: #e2560f; }
+  .amp-tile, .amp-block { position: relative; overflow: clip; border-radius: 18px; text-decoration: none; }
+  .amp-tile :global(.photo) { position: absolute; inset: 0; }
+  /* Hover zoom on the figure: the image inside belongs to GSAP (reveal and parallax). */
+  .amp-tile :global(.photo) { transition: scale 900ms var(--ease); }
+  .amp-tile:hover :global(.photo) { scale: 1.05; }
+  .amp-coffee { grid-area: c; }
+  .amp-bar { grid-area: r; }
+  .amp-book { grid-area: k; }
+  .amp-fabric { grid-area: f; }
+  .amp-cap {
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    width: fit-content;
+    padding: 0.5rem 0.8rem;
+    border-radius: 12px;
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.25;
+    transition: background-color 250ms var(--ease);
+  }
+  .amp-cap::after { content: '\00a0\2192'; }
+  .amp-tile:hover .amp-cap, .amp-tile:focus-visible .amp-cap { background: var(--orange); }
+  .amp-blue { grid-area: b; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.1rem 1.25rem; background: var(--blue); color: var(--navy); }
+  .amp-blue strong { font-family: var(--font-display); font-size: clamp(1.6rem, 2.6vw, 2.3rem); font-weight: 600; line-height: 1; }
+  .amp-blue span { margin-top: 0.35rem; font-size: 0.92rem; font-weight: 700; }
+  .amp-navy { grid-area: n; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; padding: clamp(1.25rem, 2.4vw, 2rem); background: var(--navy); color: var(--white); }
+  .amp-navy p { font-size: clamp(1.05rem, 1.5vw, 1.25rem); line-height: 1.45; }
+  .amp-link { font-family: var(--font-display); font-weight: 600; color: var(--orange); text-decoration: none; }
+  .amp-link::after { content: '\00a0\2192'; }
+  .amp-link:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+
+  /* ── Module marquee ───────────────────────────── */
+  .marquee { padding-block: 1.1rem; border-block: 1px solid var(--line); overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .marquee ul { display: flex; width: max-content; font-family: var(--font-display); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); animation: marquee 80s linear infinite; }
+  .marquee li { white-space: nowrap; padding-right: 2.5rem; }
+  .marquee li::before { content: ''; display: inline-block; width: 0.45rem; height: 0.45rem; margin-right: 2.5rem; border-radius: 50%; background: var(--orange); vertical-align: middle; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee ul { width: auto; flex-wrap: wrap; justify-content: center; row-gap: 0.5rem; }
+    .marquee li { padding-right: 1.25rem; }
+    .marquee li::before { margin-right: 0.5rem; }
+    .marquee li[aria-hidden] { display: none; }
+  }
+
+  /* ── Suites ───────────────────────────────────── */
+
+  /* ── Flow: sticky screens, scrolling steps ────── */
+  /* Header and steps stack in the left column; the screen spans both rows on the right and sticks. */
+  /* ── Pricing ──────────────────────────────────── */
+  .price-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin-top: clamp(2.5rem, 5vw, 4rem); align-items: stretch; }
+  /* Equal heights: headings line up at the top, and each slip's strip (chips or receipt) sits on its bottom edge. */
+  .price-card { display: flex; flex-direction: column; padding: 1.6rem; }
+  .price-card > :last-child { margin-top: auto; }
+  /* A receipt slip: no bottom border, sawtooth teeth hanging off the bottom edge instead. */
+  .slip { position: relative; border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; }
+  .slip::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 8px; background: conic-gradient(from -45deg at bottom, #0000, var(--white) 1deg 89deg, #0000 90deg) 50% / 16px 100%; }
+  .price-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 1rem; }
+  .price-chips li { padding: 0.22rem 0.6rem; border-radius: 999px; background: var(--cream); font-family: var(--font-display); font-size: 0.76rem; font-weight: 600; }
+  .price-zero dd { color: var(--muted); }
+  .price-zero .total dd { color: var(--ink); }
+  .price-zero-total { display: inline-block; }
+  /* The orange ball the fee line turns into when Anda carries it (created by motion.ts, feeToggle). */
+  :global(.fee-ball) { position: absolute; left: 0; top: 0; z-index: 5; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--orange); box-shadow: 0 10px 18px -8px rgba(194, 65, 12, 0.7); opacity: 0; pointer-events: none; }
+  .price-card .icon { width: 1.75rem; height: 1.75rem; }
+  .price-card h3 { margin-top: 0.9rem; font-size: 1.25rem; }
+  .price-card p { margin-top: 0.5rem; color: var(--muted); text-wrap: pretty; }
+  .price-receipt { display: grid; gap: 0.5rem; margin: 1.25rem -0.25rem 0; padding: 0.9rem 0.25rem 0; border-top: 1px dashed var(--line); font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+  .price-receipt div { display: flex; justify-content: space-between; gap: 1rem; }
+  .price-receipt dd { margin: 0; }
+  .price-receipt .fee { position: relative; z-index: 2; margin-inline: -0.5rem; padding: 0.4rem 0.5rem; border-radius: 8px; background: var(--orange-tint); color: var(--orange-text); font-weight: 700; }
+  .price-receipt div[hidden] { display: none; }
+  /* Who pays: a two-way switch with a sliding thumb. */
+  .price-who { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; margin-top: 1.1rem; font-size: 0.86rem; color: var(--muted); }
+  .seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; padding: 0.2rem; border: 1px solid var(--line); border-radius: 999px; background: var(--cream); }
+  .seg button { position: relative; z-index: 1; padding: 0.35rem 0.9rem; border: 0; border-radius: 999px; background: none; font: 600 0.82rem var(--font-display); color: var(--muted); cursor: pointer; transition: color 250ms var(--ease); }
+  .seg button[aria-pressed='true'] { color: var(--ink); }
+  .seg button:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+  .seg-thumb { position: absolute; inset: 0.2rem auto 0.2rem 0.2rem; width: calc(50% - 0.2rem); border-radius: 999px; background: var(--white); box-shadow: var(--shadow-card); transition: translate 300ms var(--ease); }
+  .seg[data-who='anda'] .seg-thumb { translate: 100% 0; }
+  .price-who-note { margin-top: 0.8rem; font-size: 0.86rem; color: var(--muted); }
+  .price-receipt .total { padding-top: 0.5rem; border-top: 2px solid var(--ink); font-family: var(--font-display); font-weight: 600; }
+
+  /* ── Showcase carousel ────────────────────── */
+  .showcase .section-head { margin-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+  .track { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .track::-webkit-scrollbar { display: none; }
+  .track:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+  /* Every slide fills the track's row, so each panel is as tall as the tallest and the controls sit right under them. */
+  .slide { display: grid; min-width: 0; scroll-snap-align: start; }
+  .slide > :global(.ps) { display: grid; }
+  .slide :global(.ps-panel) { margin-inline: 0; } /* auto margins would shrink a grid item to its content */
+  /* Under a screen tall: every slide shares the row, so the cards that sit under the copy on the feature pages are
+     left out here (the slide's link leads there), while the ones floating over the photo stay and replay. The copy is
+     padded less, and the panel is 85svh at most. */
+  @media (min-width: 1001px) {
+    .slide :global(.ps-panel) { min-height: clamp(520px, 85svh, 760px); }
+    .slide :global(.ps-copy) { padding-block: 2.5rem; }
+    .slide :global(.ps-copy .ps-card) { display: none; }
+  }
+  /* On phones the highlights go (the feature page has them), and a slide with nothing under its copy leaves room for
+     the dashes. */
+  @media (max-width: 1000px) {
+    .slide :global(.ps-copy:last-child) { padding-bottom: 3.25rem; }
+    .slide :global(.check-list) { display: none; }
+  }
+  :global(.ps-copy) .slide-link { display: inline-block; margin-top: 1.5rem; color: var(--orange); }
+  .carousel { position: relative; }
+  .dots { position: absolute; right: clamp(1rem, 3vw, 2.5rem); bottom: clamp(0.75rem, 2vw, 1.5rem); z-index: 5; display: flex; gap: 0.35rem; }
+  /* Each dash is drawn inside a taller transparent button, so it stays easy to hit. */
+  .dots button { width: 1.75rem; padding: 0.6rem 0; border: 0; background: none; cursor: pointer; transition: width 300ms var(--ease); }
+  @media (hover: none) { .dots button { padding-block: 0.9rem; } }
+  .dots button::before { content: ''; display: block; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.35); transition: background-color 300ms var(--ease); }
+  .dots button.active::before { background: rgba(255, 255, 255, 0.85); }
+  .dots button[aria-current='true'] { width: 2.75rem; }
+  .dots button[aria-current='true']::before { background: var(--orange); }
+  .dots button:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: 4px; }
+
+  /* ── Business types ───────────────────────────── */
+  .type-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+  .type-card { display: grid; gap: 0.35rem; height: 100%; padding: 1.4rem; text-decoration: none; transition: border-color 300ms var(--ease); }
+  .type-card:hover { border-color: var(--orange); }
+  .type-card .icon { width: 1.75rem; height: 1.75rem; margin-bottom: 0.5rem; }
+  .type-card strong { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+  .type-card > span:last-child { font-size: 0.9rem; color: var(--muted); }
+
+  .faq-inner { max-width: 48rem; }
+
+  /* ── Responsive ───────────────────────────────── */
+  @media (max-width: 1023px) {
+    .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .price-cards { grid-template-columns: minmax(0, 1fr); }
+    .price-cards { gap: 1.25rem; }
+    .vh-panel { grid-template-columns: minmax(0, 1fr); min-height: 0; border-radius: 22px; }
+    .vh-copy { padding: 2.25rem 1.4rem 1.75rem; }
+    .vh-media { aspect-ratio: 4 / 4.4; margin: 0 0.6rem 0.6rem; overflow: clip; border-radius: 16px; }
+    .vh-media::before { display: none; }
+    .vh-tag { top: 0.75rem; left: 0.75rem; right: 0.75rem; bottom: auto; justify-content: flex-start; }
+    .vh-tag span { padding: 0.3rem 0.6rem; font-size: 0.72rem; }
+    .amp-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-rows: auto clamp(210px, 62vw, 330px) repeat(2, clamp(130px, 38vw, 200px)) auto clamp(150px, 44vw, 220px);
+      grid-template-areas:
+        't t t t t t'
+        'c c c c c c'
+        'r r r k k k'
+        'r r r k k k'
+        'n n n n n n'
+        'f f f b b b';
+    }
+    .amp-type { padding: 0 0 2rem; }
+    .amp-type::after { bottom: 0.75rem; }
+  }
+  @media (max-width: 560px) {
+    .type-grid { grid-template-columns: 1fr; }
+    .amp-cap { font-size: 0.82rem; }
+  }
+</style>

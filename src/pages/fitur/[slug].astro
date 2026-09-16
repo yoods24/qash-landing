@@ -1,0 +1,170 @@
+---
+// One page per group, generated from src/features.ts: /fitur/pesanan, /fitur/inventaris, ...
+// A group named in suiteHeroes opens on one of its features' photo scenes, carrying the page's own copy and that
+// feature's replaying vignette; the rest open on the cream hero with their screens. Below, one section per feature:
+// a photo scene of its own, a visualization (Viz) when it has no screenshot yet, or the screens.
+import Layout from '../../layouts/Layout.astro';
+import Shots from '../../components/Shots.astro';
+import { scenes } from '../../components/scenes';
+import Viz from '../../components/Viz.astro';
+import Cta from '../../components/Cta.astro';
+import Photo from '../../components/Photo.astro';
+import { suites, suitePhotos, suiteHeroes, type Suite } from '../../features';
+import { wa } from '../../site';
+
+export function getStaticPaths() {
+  return suites.map((suite) => ({ params: { slug: suite.slug }, props: { suite } }));
+}
+
+interface Props {
+  suite: Suite;
+}
+
+const { suite } = Astro.props;
+const others = suites.filter((s) => s.slug !== suite.slug);
+const photo = suitePhotos[suite.slug];
+const waMessage = `Halo Qash, saya ingin lihat demo ${suite.name.toLowerCase()}.`;
+
+const heroFeature = suite.features.find((f) => f.slug === suiteHeroes[suite.slug]);
+const hero = heroFeature && scenes[heroFeature.slug];
+
+// Features drawn as an animated illustration until they have a screenshot (src/components/Viz.astro).
+const vizzes = new Set(['transfer-outlet', 'produksi', 'pemasok', 'absensi', 'split-payment']);
+
+// Features without a screenshot or illustration get a panel listing what they include.
+const included: Record<string, string[]> = {
+  payroll: [
+    'Jenis cuti, kebijakan jatah, dan hari libur',
+    'Pengajuan cuti dan lembur dari dashboard staf',
+    'Komponen gaji: tunjangan, potongan, dan rumusnya',
+    'Payroll bulanan dengan slip gaji PDF',
+    'Kasbon dan pelunasannya',
+    'Rekrutmen, pelamar, dan halaman karier',
+  ],
+};
+---
+
+<Layout title={`${suite.name} — Qash`} description={suite.body} wa={waMessage}>
+  {hero && heroFeature ? (
+    <hero.Scene feature={heroFeature} hero={suite} {...hero.props}>
+      <Fragment slot="actions">
+        <ul class="jump" data-reveal style="--d: 200ms">
+          {suite.features.map((f) => (
+            <li><a href={`#${f.slug}`}><span class="icon" set:html={f.icon} />{f.name}</a></li>
+          ))}
+        </ul>
+        <div class="actions" data-reveal style="--d: 280ms">
+          <a href={wa(waMessage)} class="btn btn-primary">Jadwalkan demo</a>
+          <a href="#bagian-lain" class="btn btn-ghost-light">Semua bagian</a>
+        </div>
+      </Fragment>
+    </hero.Scene>
+  ) : (
+  <section class="suite-hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow" data-reveal>{suite.name}</span>
+        <h1 data-split>{suite.tagline}</h1>
+        <p class="lead" data-reveal style="--d: 160ms">{suite.body}</p>
+        <ul class="jump" data-reveal style="--d: 240ms">
+          {suite.features.map((f) => (
+            <li><a href={`#${f.slug}`}><span class="icon" set:html={f.icon} />{f.name}</a></li>
+          ))}
+        </ul>
+        <div class="actions" data-reveal style="--d: 320ms">
+          <a href={wa(waMessage)} class="btn btn-primary">Jadwalkan demo</a>
+          <a href="#bagian-lain" class="btn btn-ghost">Semua bagian</a>
+        </div>
+      </div>
+      {photo && <Photo src={photo.src} alt={photo.alt} position={photo.position} sizes="(max-width: 900px) calc(100vw - 2.5rem), 40vw" eager reveal parallax={5} class="suite-photo" />}
+    </div>
+  </section>
+  )}
+
+  {suite.features.map((f, i) => {
+    // The hero already told this feature's scene; its section shows the screens instead.
+    const scene = f.scene && f !== heroFeature ? scenes[f.slug] : undefined;
+    return scene ? <scene.Scene feature={f} {...scene.props} /> : (
+    <section id={f.slug} class:list={['section', 'feature', { flip: i % 2 === 1, 'section-cream': i % 2 === 1 }]}>
+      <div class="container feature-grid">
+        <div class="copy" data-reveal>
+          <span class="eyebrow">{f.name}</span>
+          <h2>{f.tagline}</h2>
+          <p>{f.body}</p>
+          <ul class="check-list">{f.highlights.map((h) => <li>{h}</li>)}</ul>
+        </div>
+        <div class="visual" data-reveal style="--d: 120ms">
+          {f.shots.length > 0 ? (
+            <Shots shots={f.shots} />
+          ) : vizzes.has(f.slug) ? (
+            <Viz kind={f.slug} />
+          ) : (
+            <div class="included card">
+              <p class="included-title">Yang termasuk</p>
+              <ul class="check-list">{(included[f.slug] ?? f.highlights).map((h) => <li>{h}</li>)}</ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+  })}
+
+  <section id="bagian-lain" class="section others">
+    <div class="container">
+      <header class="section-head">
+        <span class="eyebrow" data-reveal>Bagian lain</span>
+        <h2 data-split>Semuanya membaca data yang sama.</h2>
+      </header>
+      <ul class="other-grid">
+        {others.map((s, i) => (
+          <li data-reveal style={`--d: ${i * 70}ms`}>
+            <a href={`/fitur/${s.slug}`} class="other-card card">
+              <span class="icon" set:html={s.icon} />
+              <strong>{s.name}</strong>
+              <span>{s.short}</span>
+              <span class="text-link arrow">Lihat</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Cta message={waMessage} />
+</Layout>
+
+<style>
+  .suite-hero { position: relative; overflow: hidden; padding-block: clamp(3rem, 7vw, 6rem); background: linear-gradient(180deg, var(--cream) 0%, var(--white) 100%); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); align-items: center; gap: clamp(2rem, 5vw, 4.5rem); }
+  .hero-grid :global(.suite-photo) { aspect-ratio: 4 / 3; border-radius: 22px; }
+  h1 { font-size: clamp(2.2rem, 4.6vw, 3.6rem); }
+  .lead { margin-top: 1.25rem; max-width: 48ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+  /* The same jump links and buttons on the dark photo hero. */
+  :global(.ps-hero) .jump a { border-color: rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.06); color: var(--white); }
+  :global(.ps-hero) .jump .icon { color: var(--orange); }
+
+  .feature-grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: center; gap: clamp(2rem, 6vw, 5rem); }
+  .feature.flip .copy { order: 2; }
+  .copy p { margin-top: 1rem; color: var(--muted); text-wrap: pretty; }
+  .copy .check-list { margin-top: 1.5rem; }
+  .included { padding: 1.75rem; }
+  .included-title { margin-bottom: 1rem; font-family: var(--font-display); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+  .others { border-top: 1px solid var(--line); }
+  .other-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .other-card { display: grid; grid-template-columns: 1.6rem 1fr; column-gap: 0.75rem; height: 100%; padding: 1.4rem; text-decoration: none; transition: border-color 300ms var(--ease); }
+  .other-card:hover { border-color: var(--orange); }
+  .other-card .icon { grid-row: 1 / 4; }
+  .other-card strong { grid-column: 2; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+  .other-card > span:nth-child(3) { grid-column: 2; margin-top: 0.25rem; font-size: 0.92rem; color: var(--muted); }
+  .other-card .text-link { grid-column: 2; margin-top: 0.75rem; }
+
+  @media (max-width: 900px) {
+    .hero-grid, .feature-grid { grid-template-columns: minmax(0, 1fr); }
+    .hero-grid :global(.suite-photo) { order: -1; aspect-ratio: 16 / 10; }
+    .feature.flip .copy { order: 0; }
+    .other-grid { grid-template-columns: 1fr; }
+  }
+</style>

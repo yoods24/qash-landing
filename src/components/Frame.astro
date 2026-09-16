@@ -1,0 +1,89 @@
+---
+// One app screenshot in a device frame: a laptop bezel, a phone bezel, or a plain card for cropped details.
+// Pass `video` (a path under public/) to play a muted loop inside the frame with the screenshot as poster.
+// Every frame opens full screen on click (src/scripts/zoom.ts); pass `zoom={false}` when the frame sits inside a link.
+import { Image, getImage } from 'astro:assets';
+import type { Shot } from '../features';
+
+interface Props {
+  shot: Shot;
+  eager?: boolean;
+  priority?: boolean;
+  video?: string;
+  sizes?: string;
+  class?: string;
+  zoom?: boolean;
+  /** Keeps the frame's box but paints nothing: a photo showing the same screen stands in for it, and the zoomed copy
+   *  lifts out of that spot. */
+  ghost?: boolean;
+}
+
+const { shot, eager = false, priority = false, video, sizes, class: cls, zoom = true, ghost = false } = Astro.props;
+// The largest widths feed the full-screen view; files narrower than a width are never upscaled.
+const widths = shot.kind === 'phone' ? [240, 420, 600, 900] : shot.kind === 'card' ? [400, 700, 1000] : [640, 960, 1400, 1920];
+const expand =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
+const defaultSizes =
+  shot.kind === 'phone' ? '(max-width: 900px) 40vw, 15rem' : shot.kind === 'card' ? '(max-width: 900px) 70vw, 24rem' : '(max-width: 900px) 100vw, 60vw';
+const poster = video ? await getImage({ src: shot.src, width: 1400, format: 'webp' }) : null;
+---
+
+<figure class:list={['frame', `frame-${shot.kind}`, cls]} data-ghost={ghost ? '' : undefined}>
+  {
+    video && poster ? (
+      <video autoplay muted loop playsinline preload="metadata" poster={poster.src} width={shot.src.width} height={shot.src.height} aria-label={shot.alt}>
+        <source src={video} type="video/mp4" />
+      </video>
+    ) : (
+      <Image
+        src={shot.src}
+        alt={shot.alt}
+        widths={widths}
+        sizes={sizes ?? defaultSizes}
+        format="webp"
+        loading={eager || priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
+        decoding="async"
+      />
+    )
+  }
+  {/* Rendered hidden: src/scripts/zoom.ts reveals it, so without JavaScript there is no dead control. The image alt
+      already describes the screen, so the button only names its action. */}
+  {zoom && <button type="button" class="frame-zoom" aria-label="Lihat layar penuh" hidden><span class="frame-zoom-icon" set:html={expand} /></button>}
+</figure>
+
+<style>
+  .frame { position: relative; margin: 0; overflow: hidden; background: #1b1b20; box-shadow: var(--shadow-device); }
+  .frame img, .frame video { display: block; width: 100%; height: auto; object-fit: cover; object-position: top; }
+  .frame-laptop { border: 9px solid #1b1b20; border-bottom-width: 14px; border-radius: 16px; }
+  .frame-phone { border: 7px solid #1b1b20; border-radius: 30px; }
+  .frame-phone img { aspect-ratio: 9 / 19; }
+  .frame-card { background: var(--white); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-card); }
+  .frame[data-ghost] { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+  .frame[data-ghost] img { opacity: 0; }
+
+  /* Invisible full-size button; the small badge appears on hover and focus, and stays on touch screens. */
+  .frame-zoom { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; padding: 0; border: 0; border-radius: inherit; background: transparent; cursor: zoom-in; }
+  .frame-zoom:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+  .frame-zoom-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    background: rgba(19, 19, 19, 0.72);
+    color: var(--white);
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+  }
+  .frame-zoom-icon :global(svg) { width: 45%; height: 45%; }
+  .frame-zoom:hover .frame-zoom-icon, .frame-zoom:focus-visible .frame-zoom-icon { opacity: 1; transform: none; }
+  .frame-phone .frame-zoom-icon { top: 8px; right: 8px; width: 1.8rem; height: 1.8rem; }
+  @media (hover: none) {
+    .frame-zoom-icon { opacity: 0.85; transform: none; width: 1.8rem; height: 1.8rem; }
+  }
+</style>

@@ -1,0 +1,135 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Faq from '../components/Faq.astro';
+import Cta from '../components/Cta.astro';
+import Photo from '../components/Photo.astro';
+import { icons, photos } from '../features';
+import { wa } from '../site';
+
+const waMessage = 'Halo Qash, saya ingin tanya soal biaya per transaksi.';
+const waHref = wa(waMessage);
+
+const faqs: { q: string; a: string }[] = [
+  { q: 'Ada biaya bulanan atau biaya perangkat?', a: 'Tidak. Qash berjalan di browser tablet, laptop, PC, atau ponsel yang sudah Anda punya. Printer thermal terhubung lewat aplikasi stasiun cetak, layar pelanggan dan papan antrean jalan di layar mana pun.' },
+  { q: 'Bagaimana Biaya Platform tampil ke pelanggan?', a: 'Sebagai satu baris di struk dan di layar pembayaran: Biaya Platform (Qash) Rp1.000, di bawah subtotal dan pajak. Uangnya terkumpul bersama pembayaran pesanan, dan tagihan Qash ke Anda hanya meneruskan yang sudah terkumpul.' },
+  { q: 'Kalau saya lebih suka struk tanpa baris tambahan?', a: 'Pilih ditanggung usaha. Harga di struk tetap bersih, dan Rp1.000 per transaksi dipotong dari saldo prabayar yang Anda isi sendiri, atau ditagih bulanan untuk akun pascabayar.' },
+  { q: 'Apa itu saldo prabayar?', a: 'Saldo tertutup yang hanya bisa dipakai untuk biaya Qash, diisi mulai Rp100.000. Ada cadangan kecil supaya kasir tidak berhenti di tengah layanan saat saldo tepat habis.' },
+  { q: 'Kalau pesanan direfund?', a: 'Biaya platform untuk pesanan yang sudah selesai tidak dikembalikan.' },
+  { q: 'Bisa ganti dari dibayar pelanggan ke ditanggung usaha?', a: 'Bisa, kapan saja, bersama tim Qash. Pengaturannya berlaku untuk seluruh akun.' },
+  { q: 'Punya lebih dari dua outlet?', a: 'Biayanya tetap Rp1.000 per transaksi, berapa pun jumlah outletnya. Ceritakan jumlah cabang Anda lewat WhatsApp dan kami bantu menyiapkan semuanya.' },
+];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<Layout
+  title="Harga — Qash"
+  description="Rp1.000 per transaksi, secara bawaan tercantum di struk pelanggan sebagai Biaya Platform. Tanpa biaya bulanan, lisensi, atau perangkat."
+  wa={waMessage}
+>
+  <section class="page-hero price price-plain">
+    <div class="container hero-inner">
+      <span class="eyebrow" data-reveal>Harga</span>
+      {/* Rp0 counts up to 1.000 and the thousands fold into a k (src/scripts/motion.ts, pricing; plain, no market
+          prices first). The markup is the finished line for readers without motion. */}
+      <h1 class="price-line" aria-label="Rp1.000 per transaksi.">
+        <span class="price-tag"><small>Rp</small><span class="price-n">1</span><span class="price-thou" hidden>.000</span><span class="price-k">k</span></span>
+        <span class="price-per">/transaksi</span>
+      </h1>
+      <p class="lead" data-reveal style="--d: 160ms">
+        Tidak ada biaya bulanan, lisensi per perangkat, biaya per pengguna, atau perangkat yang harus dibeli. Qash mengambil
+        Rp1.000 untuk setiap pesanan yang selesai dibayar, bukan persentase dari omzet, dan secara bawaan biaya itu tercantum di
+        struk pelanggan sebagai Biaya Platform. Usaha Anda menjalankan Qash di Rp0.
+      </p>
+      <div class="actions" data-reveal style="--d: 240ms">
+        <a href={waHref} class="btn btn-primary"><span class="btn-icon" set:html={icons.whatsapp} />Tanya lewat WhatsApp</a>
+        <a href="#dua-cara" class="btn btn-ghost">Siapa yang membayar?</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="dua-cara" class="section section-cream ways">
+    <div class="container">
+      <header class="section-head">
+        <span class="eyebrow" data-reveal>Siapa yang membayar</span>
+        <h2 data-split>Dua cara, satu angka yang sama.</h2>
+        <p data-reveal style="--d: 120ms">Rp1.000 per transaksi tidak berubah. Yang Anda pilih adalah apakah baris itu tampil di struk pelanggan atau ditanggung usaha.</p>
+      </header>
+      <div class="ways-grid">
+        <article class="way card">
+          <span class="tag">Bawaan</span>
+          <h3>Dibayar pelanggan</h3>
+          <p>Struk menampilkan baris <strong>Biaya Platform (Qash) Rp1.000</strong>. Uangnya terkumpul bersama pembayaran pesanan, dan tagihan Qash ke Anda hanya meneruskan yang sudah terkumpul. Tidak ada biaya yang keluar dari kas usaha.</p>
+          <dl class="bill">
+            <div><dt>Kopi susu × 2</dt><dd>44.000</dd></div>
+            <div><dt>Roti bakar</dt><dd>18.000</dd></div>
+            <div class="sub"><dt>Subtotal</dt><dd>62.000</dd></div>
+            <div><dt>PB1 10%</dt><dd>6.200</dd></div>
+            <div class="fee"><dt>Biaya Platform (Qash)</dt><dd>1.000</dd></div>
+            <div class="total"><dt>Total</dt><dd>Rp 69.200</dd></div>
+          </dl>
+          <p class="fit"><strong>Cocok untuk</strong> kedai dan kafe yang ingin biaya sistem benar-benar nol.</p>
+        </article>
+        <article class="way card">
+          <span class="tag tag-navy">Pilihan</span>
+          <h3>Ditanggung usaha</h3>
+          <p>Harga di struk tetap bersih, tanpa baris tambahan. Rp1.000 per transaksi dipotong dari <strong>saldo prabayar</strong> yang Anda isi sendiri, mulai Rp100.000, atau ditagih di akhir bulan untuk akun pascabayar.</p>
+          <dl class="bill">
+            <div><dt>Kopi susu × 2</dt><dd>44.000</dd></div>
+            <div><dt>Roti bakar</dt><dd>18.000</dd></div>
+            <div class="sub"><dt>Subtotal</dt><dd>62.000</dd></div>
+            <div><dt>PB1 10%</dt><dd>6.200</dd></div>
+            <div class="total"><dt>Total</dt><dd>Rp 68.200</dd></div>
+          </dl>
+          <p class="fit"><strong>Cocok untuk</strong> restoran yang tidak ingin ada baris biaya di struk tamu.</p>
+        </article>
+      </div>
+      <p class="ways-note" data-reveal>Pengaturan ini berlaku per akun dan bisa diubah kapan saja bersama tim Qash.</p>
+    </div>
+  </section>
+
+  <section class="section section-paper">
+    <div class="container faq-inner">
+      <header class="section-head">
+        <span class="eyebrow" data-reveal>FAQ harga</span>
+        <h2 data-split>Yang biasanya ditanyakan sebelum mulai.</h2>
+      </header>
+      <div data-reveal><Faq items={faqs} /></div>
+    </div>
+  </section>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+
+  <Cta message={waMessage} />
+</Layout>
+
+<style>
+  .page-hero { padding-block: clamp(3rem, 7vw, 6rem) clamp(2.5rem, 6vw, 4rem); background: linear-gradient(180deg, var(--cream) 0%, var(--white) 100%); }
+  .hero-inner { max-width: 50rem; margin-inline: auto; text-align: center; }
+  .hero-inner .lead { margin: 1.5rem auto 0; max-width: 58ch; }
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 2rem; }
+
+  .ways-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+  .way { position: relative; padding: 2rem; }
+  .tag { position: absolute; top: 1.25rem; right: 1.25rem; padding: 0.25rem 0.7rem; border-radius: 999px; background: var(--orange); font-family: var(--font-display); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .tag-navy { background: var(--blue-tint); color: var(--navy); }
+  .way > p { margin-top: 0.75rem; color: var(--muted); text-wrap: pretty; }
+  .bill { display: grid; gap: 0.5rem; margin-top: 1.5rem; padding: 1.25rem; border: 1px dashed var(--line); border-radius: var(--radius-sm); background: var(--paper); font-variant-numeric: tabular-nums; }
+  .bill div { display: flex; justify-content: space-between; gap: 1rem; }
+  .bill dd { margin: 0; }
+  .bill .sub { margin-top: 0.3rem; padding-top: 0.6rem; border-top: 1px dashed var(--line); }
+  .bill .fee { margin: 0.1rem -0.5rem; padding: 0.4rem 0.5rem; border-radius: 8px; background: var(--orange-tint); color: var(--orange-text); font-weight: 700; }
+  .bill .total { margin-top: 0.3rem; padding-top: 0.6rem; border-top: 2px solid var(--ink); font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
+  .fit { margin-top: 1.25rem; font-size: 0.95rem; }
+  .ways-note { margin-top: 1.5rem; font-size: 0.95rem; color: var(--muted); }
+
+
+  .faq-inner { max-width: 48rem; }
+
+  @media (max-width: 900px) {
+    .ways-grid { grid-template-columns: 1fr; }
+  }
+</style>

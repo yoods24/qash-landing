@@ -1,0 +1,60 @@
+---
+// Design Studio on a laptop in the owner's own café, and over the photo a little website that re-dresses itself with
+// each preset in turn (src/scripts/motion.ts, presets): the preset picks a background, an ink, an accent, corner
+// radius, and where the hero text sits, and the save tick blinks once the look is applied.
+import PhotoScene from './PhotoScene.astro';
+import type { Feature, Suite } from '../features';
+
+interface Props {
+  feature: Feature;
+  hero?: Suite;
+}
+
+const { feature, hero } = Astro.props;
+const presets = [
+  { id: 'kayu', name: 'Kayu' },
+  { id: 'daun', name: 'Daun' },
+  { id: 'malam', name: 'Malam' },
+];
+---
+
+<PhotoScene feature={feature} hero={hero} label="Buka Design Studio" side="right">
+  <slot name="actions" slot="actions" />
+  <div slot="copy" class="ps-card studio" aria-hidden="true">
+    <div class="studio-head"><span>Preset tampilan</span><span class="studio-saved">Tersimpan</span></div>
+    <div class="site" data-preset="kayu">
+      <div class="site-bar"><i></i><b></b><b></b><b></b></div>
+      <div class="site-hero"><em></em><em class="short"></em><u></u></div>
+      <div class="site-row"><span></span><span></span><span></span></div>
+    </div>
+    <ol class="presets">
+      {presets.map((p, i) => <li class:list={{ 'is-active': i === 0 }} data-preset={p.id}>{p.name}</li>)}
+    </ol>
+  </div>
+</PhotoScene>
+
+<style>
+  .studio-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); }
+  .studio-saved { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.18rem 0.55rem; border-radius: 999px; background: rgba(1, 190, 95, 0.2); color: var(--green); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
+  .studio-saved::before { content: ''; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--green); }
+
+  /* The little site. Each preset sets the palette and shape; every part transitions between them. */
+  .site { --bg: var(--cream); --fg: #2b1d12; --accent: var(--orange); --r: 999px; --align: start; margin-top: 0.8rem; padding: 0.55rem; border-radius: 10px; background: var(--bg); transition: background-color 600ms var(--ease); }
+  .site[data-preset='daun'] { --bg: #0f2f22; --fg: #eaf5ee; --accent: var(--green); --r: 4px; --align: center; }
+  .site[data-preset='malam'] { --bg: var(--navy); --fg: #ffffff; --accent: var(--orange); --r: 10px; --align: start; }
+  .site * { transition: background-color 600ms var(--ease), border-radius 600ms var(--ease), opacity 600ms var(--ease); }
+  .site-bar { display: flex; align-items: center; gap: 0.3rem; }
+  .site-bar i { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--accent); }
+  .site-bar b { width: 1rem; height: 0.22rem; border-radius: 2px; background: var(--fg); opacity: 0.45; }
+  .site-bar b:first-of-type { margin-left: auto; }
+  .site-hero { display: grid; justify-items: var(--align); gap: 0.35rem; margin-top: 0.7rem; padding: 0.7rem 0.4rem 0.5rem; border-radius: calc(var(--r) / 4 + 4px); background: color-mix(in srgb, var(--fg) 8%, transparent); }
+  .site-hero em { display: block; width: 62%; height: 0.42rem; border-radius: 3px; background: var(--fg); }
+  .site-hero em.short { width: 38%; height: 0.28rem; opacity: 0.5; }
+  .site-hero u { display: block; width: 2.6rem; height: 0.85rem; margin-top: 0.25rem; border-radius: var(--r); background: var(--accent); }
+  .site-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; margin-top: 0.45rem; }
+  .site-row span { height: 1.3rem; border-radius: calc(var(--r) / 6 + 3px); background: color-mix(in srgb, var(--fg) 14%, transparent); }
+
+  .presets { display: flex; gap: 0.4rem; margin-top: 0.8rem; }
+  .presets li { flex: 1; padding: 0.38rem 0.5rem; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 999px; text-align: center; font-size: 0.76rem; font-weight: 600; color: rgba(255, 255, 255, 0.75); transition: background-color 300ms var(--ease), color 300ms var(--ease), border-color 300ms var(--ease); }
+  .presets li.is-active { border-color: var(--orange); background: var(--orange); color: var(--ink); }
+</style>

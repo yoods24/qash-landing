@@ -1,0 +1,48 @@
+---
+interface Props {
+  items: { q: string; a: string }[];
+}
+const { items } = Astro.props;
+---
+
+<div class="faq">
+  {items.map((item) => (
+    <details>
+      <summary>{item.q}</summary>
+      <p>{item.a}</p>
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq details { border-top: 1px solid var(--line); }
+  .faq details:last-of-type { border-bottom: 1px solid var(--line); }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.15rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: color 200ms var(--ease);
+  }
+  summary:hover { color: var(--orange-text); }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: '';
+    flex: none;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23131313' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / 55% no-repeat;
+    transition: transform 300ms var(--ease), background-color 300ms var(--ease);
+  }
+  details[open] summary::after { transform: rotate(45deg); background-color: var(--orange); }
+  details p { padding-bottom: 1.4rem; max-width: 60ch; color: var(--muted); }
+  details::details-content { block-size: 0; overflow: hidden; transition: block-size 350ms var(--ease), content-visibility 350ms allow-discrete; }
+  details[open]::details-content { block-size: auto; }
+</style>

@@ -1,0 +1,36 @@
+---
+// The kitchen screen: a tablet on the pass, and under the copy one order's life on the board, replayed: the timer
+// counts and the stages light up in turn (src/scripts/motion.ts, ticket).
+import PhotoScene from './PhotoScene.astro';
+import type { Feature } from '../features';
+
+interface Props {
+  feature: Feature;
+}
+
+const { feature } = Astro.props;
+---
+
+<PhotoScene feature={feature} label="Buka papan dapur" side="right">
+  <slot name="actions" slot="actions" />
+  <div slot="copy" class="ps-card ticket" aria-hidden="true">
+    <div class="ticket-head"><span>#0000415 · Meja 4</span><b class="ticket-timer">0:00</b></div>
+    <ol class="ticket-stages">
+      <li data-stage><i></i>Baru</li>
+      <li data-stage><i></i>Disiapkan</li>
+      <li data-stage><i></i>Siap</li>
+    </ol>
+  </div>
+</PhotoScene>
+
+<style>
+  .ticket-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
+  .ticket-timer { font-size: 1.15rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--white); }
+  .ticket-stages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.85rem; font-size: 0.8rem; font-weight: 500; color: rgba(255, 255, 255, 0.45); }
+  .ticket-stages li { display: grid; gap: 0.45rem; transition: color 300ms var(--ease); }
+  .ticket-stages i { display: block; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.14); transition: background-color 300ms var(--ease); }
+  .ticket-stages li.is-active { color: var(--white); }
+  .ticket-stages li.is-active i { background: var(--orange); }
+  .ticket-stages li.is-done { color: rgba(255, 255, 255, 0.7); }
+  .ticket-stages li.is-done i { background: var(--green); }
+</style>

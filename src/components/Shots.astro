@@ -1,0 +1,46 @@
+---
+// Composes a feature's screenshots: a laptop as the base with up to two overlays (phone right, card left),
+// or a row of phones and cards when there is no laptop shot.
+import Frame from './Frame.astro';
+import type { Shot } from '../features';
+
+interface Props {
+  shots: Shot[];
+  eager?: boolean;
+}
+
+const { shots, eager = false } = Astro.props;
+const base = shots.find((s) => s.kind === 'laptop');
+const overlays = shots.filter((s) => s !== base).slice(0, 2);
+---
+
+{
+  base ? (
+    <div class:list={['shots', { 'has-overlay': overlays.length > 0 }]}>
+      <Frame shot={base} eager={eager} />
+      {overlays.map((s) => (
+        <div class:list={['overlay', `overlay-${s.kind}`]}>
+          <Frame shot={s} eager={eager} />
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div class="row">
+      {shots.map((s) => (
+        <Frame shot={s} eager={eager} />
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .shots { position: relative; }
+  .shots.has-overlay { padding: 0 7% 9% 0; }
+  .overlay { position: absolute; bottom: 0; }
+  .overlay-phone { right: 0; width: 24%; }
+  .overlay-card { left: -5%; bottom: -6%; width: 30%; }
+  @media (max-width: 900px) { .overlay-card { left: 0; } }
+  .row { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 1.5rem; }
+  .row :global(.frame-phone) { width: min(40%, 15rem); }
+  .row :global(.frame-card) { width: min(100%, 30rem); }
+</style>
