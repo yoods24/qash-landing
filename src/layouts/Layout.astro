@@ -142,8 +142,9 @@ const organization = {
           <a href="/#faq">FAQ</a>
           <a href={appUrl}>Masuk ke Qash</a>
           <a href={waSalesUrl}>WhatsApp</a>
-          {/* TODO legal: sambungkan ke /privasi dan /syarat saat dokumennya siap. */}
-          <span class="soon">Kebijakan privasi <em>segera</em></span>
+          <a href="https://instagram.com/hello.qash" target="_blank" rel="noopener" class="ig"><span class="btn-icon" set:html={icons.instagram} />Instagram</a>
+          {/* TODO legal: sambungkan ke /syarat saat dokumennya siap. */}
+          <a href="/privasi">Kebijakan privasi</a>
           <span class="soon">Syarat layanan <em>segera</em></span>
         </nav>
       </div>
@@ -454,6 +455,7 @@ const organization = {
   .foot nav { display: grid; align-content: start; gap: 0.45rem; }
   .foot nav a { color: var(--white); text-decoration: none; }
   .foot nav a:hover { color: var(--orange); }
+  .ig { display: inline-flex; align-items: center; gap: 0.45rem; }
   .soon { color: rgba(255, 255, 255, 0.5); }
   .soon em { margin-left: 0.4rem; padding: 0.05rem 0.45rem; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 999px; font-size: 0.72rem; font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; }
   .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.12); font-size: 0.85rem; color: rgba(255, 255, 255, 0.55); }

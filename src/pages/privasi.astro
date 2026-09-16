@@ -1,0 +1,152 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Text is the Kebijakan Privasi document as issued; edit here when legal revises it.
+const sections = [
+  { id: 'pendahuluan', title: 'Pendahuluan' },
+  { id: 'persetujuan', title: 'Persetujuan Pengguna' },
+  { id: 'data', title: 'Data Pribadi yang Dikumpulkan' },
+  { id: 'tujuan', title: 'Tujuan dan Dasar Pemrosesan' },
+  { id: 'pengungkapan', title: 'Pengungkapan dan Integrasi Pihak Ketiga' },
+  { id: 'keamanan', title: 'Penyimpanan, Keamanan, dan Transfer Data' },
+  { id: 'hak', title: 'Hak Subjek Data Pribadi' },
+  { id: 'umum', title: 'Ketentuan Umum' },
+];
+---
+
+<Layout title="Kebijakan Privasi — Qash" description="Bagaimana Qash mengumpulkan, menggunakan, mengungkapkan, dan melindungi Data Pribadi Merchant, Staf Merchant, dan Pengguna Akhir sesuai UU PDP.">
+  <section class="section policy">
+    <div class="container grid">
+      <aside>
+        <nav class="toc" aria-label="Bagian kebijakan">
+          {sections.map((s) => <a href={`#${s.id}`}>{s.title}</a>)}
+        </nav>
+      </aside>
+
+      <article class="doc">
+        <span class="eyebrow">Legal</span>
+        <h1>Kebijakan Privasi</h1>
+        <p class="effective">Berlaku efektif per tanggal 16 September 2026</p>
+
+        <h2 id="pendahuluan">Pendahuluan</h2>
+        <p>PT Sukshes Dunia Akhirat (“Qash”, “Kami”) adalah pemilik konten dan operator situs web www.withqash.com, situs terkait dan microsites yang diakses melalui situs web tersebut, dan aplikasi Qash beserta seluruh fitur yang disediakan di dalamnya, mencakup manajemen pesanan, inventaris, promo, layanan pelayan dan dapur, kehadiran karyawan, HRM, POS, backoffice, tagihan dan pembayaran, serta design studio, dan layanan lain yang mungkin disediakan Qash dari waktu ke waktu (secara bersama-sama “Layanan”).</p>
+        <p>Dalam Kebijakan Privasi ini, yang dimaksud dengan:</p>
+        <ul>
+          <li><strong>“Data Pribadi”</strong> adalah data tentang orang perseorangan yang teridentifikasi atau dapat diidentifikasi, sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi (“UU PDP”).</li>
+          <li><strong>“Merchant”</strong> berarti pelaku usaha FnB, termasuk perwakilannya yang sah, yang telah mendaftar dan/atau menandatangani perjanjian dengan Qash untuk menggunakan Layanan dalam kegiatan usahanya.</li>
+          <li><strong>“Staf Merchant”</strong> berarti karyawan atau perwakilan Merchant yang mengoperasikan Layanan atas nama Merchant.</li>
+          <li><strong>“Pengguna Akhir”</strong> berarti Pelanggan yang bertransaksi dengan Merchant melalui Layanan.</li>
+          <li><strong>“Pengguna”</strong> berarti Merchant, Staf Merchant, dan/atau Pengguna Akhir yang mengakses atau menggunakan Layanan.</li>
+          <li><strong>“Mitra Pembayaran”</strong> berarti penyedia jasa payment gateway pihak ketiga, dalam hal ini Doku, yang memproses transaksi pembayaran on-gateway pada Layanan.</li>
+        </ul>
+        <p>Kebijakan ini merupakan bagian yang tidak terpisahkan dari Syarat dan Ketentuan Layanan Qash.</p>
+
+        <h2 id="persetujuan">Persetujuan Pengguna</h2>
+        <p>Dengan mendaftar dan menggunakan Layanan, Pengguna menyatakan telah membaca, memahami, dan menyetujui Kebijakan Privasi ini. Persetujuan ini mencakup pengumpulan, penggunaan, pengungkapan, dan pemrosesan Data Pribadi sebagaimana diatur di sini. Pengguna yang tidak menyetujui ketentuan ini agar tidak mendaftar atau menggunakan Layanan. Untuk Pengguna Akhir yang datanya dikumpulkan melalui Merchant, persetujuan diperoleh melalui mekanisme yang disediakan Merchant pada titik transaksi. Merchant bertanggung jawab memastikan persetujuan tersebut diperoleh sesuai UU PDP. Untuk data biometrik dan data keuangan pribadi sebagaimana diuraikan pada bagian Data Pribadi yang Dikumpulkan, Qash meminta persetujuan eksplisit secara terpisah sesuai Pasal 21 UU PDP.</p>
+
+        <h2 id="data">Data Pribadi yang Dikumpulkan</h2>
+        <p>Dari Merchant dan Staf Merchant, Qash mengumpulkan nama, NIK, alamat, nomor telepon, e-mail, tanggal lahir, NPWP, dokumen legalitas usaha, nomor rekening bank untuk settlement, kredensial akun, serta riwayat aktivitas pada dasbor, POS, dan backoffice.</p>
+        <p>Untuk fitur kehadiran karyawan, Qash mengumpulkan foto wajah Staf Merchant pada saat absensi beserta data lokasi perangkat pada saat absensi tersebut dilakukan. Foto wajah digunakan semata sebagai bukti kehadiran, bukan untuk verifikasi atau pengenalan wajah, dan data lokasi digunakan untuk memvalidasi bahwa absensi dilakukan dari lokasi kerja yang ditentukan. Foto wajah tergolong Data Pribadi Bersifat Spesifik (data biometrik) sesuai Pasal 4 ayat (2) UU PDP dan diproses berdasarkan persetujuan eksplisit Staf Merchant.</p>
+        <p>Untuk fitur HRM, Qash mengumpulkan data penggajian, kontak darurat, riwayat cuti, dan data kinerja Staf Merchant. Data penggajian tergolong data keuangan pribadi yang memerlukan perlakuan dan pembatasan akses lebih ketat dibanding data umum.</p>
+        <p>Untuk fitur design studio, Merchant dapat mengunggah aset seperti logo, foto produk, atau materi promosi lain. Merchant bertanggung jawab penuh atas legalitas dan hak penggunaan aset yang diunggah, termasuk data pribadi pihak lain yang mungkin termuat di dalamnya.</p>
+        <p>Dari Pengguna Akhir yang bertransaksi melalui Customer Self-Order, Qash mengumpulkan nama, e-mail, nomor telepon (opsional), dan gender (opsional) untuk keperluan pencatatan pesanan, serta riwayat pesanan, nilai dan metode transaksi, waktu dan outlet transaksi, data preferensi menu, dan riwayat promo dan poin loyalitas.</p>
+        <p>Untuk transaksi on-gateway, data instrumen pembayaran diproses dan disimpan oleh Mitra Pembayaran sesuai standar PCI-DSS. Qash tidak menyimpan data kartu pembayaran secara lengkap. Untuk transaksi off-gateway, Merchant menggunakan metode pembayarannya sendiri di luar sistem Qash, dan Qash hanya mencatat data transaksi tersebut pada struk sebagai dasar penagihan biaya layanan kepada Merchant per struk yang berstatus lunas (paid), tanpa memproses dana transaksi itu sendiri.</p>
+        <p>Qash juga mengumpulkan data secara otomatis, meliputi alamat IP, jenis perangkat, sistem operasi, log aktivitas, dan catatan kesalahan sistem pada seluruh modul Layanan.</p>
+        <p>Data diperoleh langsung dari Pengguna, dihasilkan otomatis melalui penggunaan sistem, atau diteruskan oleh Merchant maupun Mitra Pembayaran.</p>
+
+        <h2 id="tujuan">Tujuan dan Dasar Pemrosesan</h2>
+        <p>Data Pribadi diproses untuk:</p>
+        <ol>
+          <li>Menyediakan dan mengoperasikan seluruh modul Layanan.</li>
+          <li>Memproses transaksi pembayaran dan pencairan dana kepada Merchant.</li>
+          <li>Mengelola data kehadiran dan kepegawaian melalui fitur HRM.</li>
+          <li>Menjalankan program promo dan loyalitas pelanggan.</li>
+          <li>Melakukan verifikasi identitas dan pencegahan kecurangan.</li>
+          <li>Menyusun laporan bisnis untuk Merchant.</li>
+          <li>Menanggapi keluhan dan permintaan dukungan.</li>
+          <li>Memenuhi kewajiban hukum dan permintaan instansi berwenang.</li>
+        </ol>
+        <p>Dasar pemrosesan mengacu Pasal 20 UU PDP, meliputi persetujuan Subjek Data, pelaksanaan perjanjian, kewajiban hukum, dan kepentingan sah Qash yang tidak mengesampingkan hak Subjek Data.</p>
+
+        <h2 id="pengungkapan">Pengungkapan dan Integrasi Pihak Ketiga</h2>
+        <p>Data Pribadi dapat diungkapkan kepada Mitra Pembayaran untuk memproses transaksi on-gateway, Merchant atas data Pengguna Akhir dan Staf Merchant yang bersangkutan, penyedia infrastruktur teknologi yang bertindak sebagai Prosesor Data Pribadi, instansi pemerintah atau penegak hukum sepanjang diwajibkan peraturan perundang-undangan, dan calon penerima dalam hal penggabungan, akuisisi, atau pengalihan usaha Qash. Qash tidak menjual Data Pribadi kepada pihak ketiga untuk kepentingan komersial di luar tujuan dalam kebijakan ini.</p>
+        <p>Layanan dapat terintegrasi dengan sistem pihak ketiga, termasuk Mitra Pembayaran. Kebijakan Privasi ini tidak berlaku atas praktik pihak ketiga tersebut. Pengguna disarankan membaca kebijakan privasi pihak ketiga sebelum menggunakan fitur terkait. Data yang telah diungkapkan kepada pihak ketiga berada di luar kendali Qash.</p>
+
+        <h2 id="keamanan">Penyimpanan, Keamanan, dan Transfer Data</h2>
+        <p>Qash menerapkan enkripsi data sensitif, kontrol akses berbasis peran pada dasbor, POS, dan backoffice, serta pencatatan log akses untuk mencegah akses tidak sah. Pengguna bertanggung jawab menjaga kerahasiaan kredensial akunnya dan wajib segera melaporkan kepada Qash apabila terjadi penggunaan akun secara tidak sah.</p>
+        <p>Data disimpan selama Pengguna menggunakan Layanan dan untuk jangka waktu tertentu setelahnya, sepanjang diperlukan untuk memenuhi tujuan pemrosesan atau kewajiban penyimpanan dokumen keuangan sesuai peraturan yang berlaku.</p>
+        <p>Transfer Data Pribadi ke luar wilayah Indonesia dilakukan hanya kepada negara dengan tingkat pelindungan data yang setara atau lebih tinggi, atau dengan penerapan pelindungan yang memadai dan mengikat sesuai Pasal 56 UU PDP.</p>
+
+        <h2 id="hak">Hak Subjek Data Pribadi</h2>
+        <p>Sesuai UU PDP, Subjek Data Pribadi berhak:</p>
+        <ol>
+          <li>Mendapatkan informasi mengenai dasar dan tujuan pemrosesan datanya.</li>
+          <li>Melengkapi dan memperbaiki data yang tidak akurat.</li>
+          <li>Mengakses dan memperoleh salinan datanya.</li>
+          <li>Meminta penghapusan atau pemusnahan datanya sesuai ketentuan berlaku.</li>
+          <li>Menarik persetujuan yang telah diberikan.</li>
+          <li>Mengajukan keberatan atas keputusan yang semata didasarkan pada pemrosesan otomatis.</li>
+          <li>Menggugat dan menerima ganti rugi atas pelanggaran pemrosesan datanya.</li>
+        </ol>
+        <p>Permintaan diajukan melalui kontak resmi Qash, atau kepada Merchant terkait untuk data yang dikumpulkan melalui Merchant.</p>
+
+        <h2 id="umum">Ketentuan Umum</h2>
+        <p>Qash dapat mengubah Kebijakan Privasi ini sewaktu-waktu. Perubahan akan diberitahukan melalui Layanan sebelum berlaku efektif. Penggunaan Layanan setelah perubahan berlaku dianggap sebagai persetujuan atas perubahan tersebut.</p>
+        <p>Kebijakan ini tunduk pada hukum di Republik Indonesia. Sengketa diselesaikan melalui musyawarah. Apabila setelah 30 (tiga puluh) hari sejak terjadinya musyawarah tidak ditemukan kesepakatan (mufakat), penyelesaian dilakukan melalui Pengadilan Negeri Jakarta Selatan.</p>
+        <p>Apabila salah satu ketentuan dinyatakan tidak sah atau tidak dapat dilaksanakan, ketentuan tersebut dipisahkan tanpa memengaruhi keberlakuan ketentuan lainnya.</p>
+      </article>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .policy { padding-top: clamp(2.5rem, 5vw, 4rem); }
+  .grid { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 3rem 4rem; align-items: start; }
+  aside { position: sticky; top: 6rem; align-self: start; }
+  .toc { display: grid; }
+  .toc a {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 200ms var(--ease);
+  }
+  .toc a:hover, .toc a[aria-current] { color: var(--orange-text); }
+  .toc a:first-child { border-top: 1px solid var(--line); }
+
+  .doc { max-width: 70ch; }
+  .doc h1 { margin-top: 0.75rem; font-size: clamp(2.2rem, 5vw, 3.4rem); }
+  .effective { margin-top: 0.5rem; color: var(--muted); }
+  .doc h2 { margin-top: 3rem; font-size: clamp(1.4rem, 2.4vw, 1.8rem); scroll-margin-top: 6rem; }
+  .doc p, .doc li { margin-top: 1rem; line-height: 1.7; color: var(--muted); text-align: justify; hyphens: auto; }
+  .doc strong { color: var(--ink); }
+  .doc ol { padding-left: 1.5rem; list-style: decimal; }
+  .doc ul { padding-left: 1.25rem; list-style: "–  "; }
+  .doc li { margin-top: 0.5rem; }
+
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; }
+    aside { position: static; }
+  }
+</style>
+
+<script>
+  // Highlight the section in view in the sidebar.
+  document.addEventListener('astro:page-load', () => {
+    const links = document.querySelectorAll<HTMLAnchorElement>('.toc a');
+    if (!links.length || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          links.forEach((a) => a.toggleAttribute('aria-current', a.hash === `#${e.target.id}`));
+        }
+      },
+      { rootMargin: '-20% 0px -70% 0px' },
+    );
+    links.forEach((a) => { const h = document.getElementById(a.hash.slice(1)); if (h) io.observe(h); });
+  });
+</script>

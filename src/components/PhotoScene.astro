@@ -97,22 +97,23 @@ const box = (r: typeof s) => `left: ${r.left}%; top: ${r.top}%; width: ${r.width
   .ps-right .ps-media { grid-area: 1 / 2; }
   .ps-right .ps-copy { grid-area: 1 / 1; }
 
-  /* Photo column: the picture keeps its own proportions and is slid so the screen always sits at the same spot of the
-     column (--cx); the side of the room nearest the copy fades into the panel. */
-  .ps-media { position: relative; overflow: clip; cursor: zoom-in; }
+  /* Photo column: the picture keeps its own proportions and is slid so the screen sits at the same spot of the column
+     (--cx, a percentage as a number), except that it never slides far enough to leave a strip of the column bare; on a
+     wide, short panel it also grows past 106% so it covers the column. The side nearest the copy fades into the panel. */
+  .ps-media { position: relative; overflow: clip; cursor: zoom-in; container-type: inline-size; }
   .ps-media::after { content: ''; position: absolute; inset: 0 0 0 auto; z-index: 1; width: 28%; background: linear-gradient(270deg, var(--ink), rgba(19, 19, 19, 0)); pointer-events: none; }
   .ps-right .ps-media::after { inset: 0 auto 0 0; width: 30%; background: linear-gradient(90deg, var(--ink), rgba(19, 19, 19, 0)); }
   .ps-photo {
     position: absolute;
-    top: -3%;
-    left: var(--cx, 64%);
-    height: 106%;
+    top: 50%;
+    left: 0;
+    height: max(106%, calc(100cqw / (var(--ar, 3 / 2))));
     aspect-ratio: var(--ar, 3 / 2);
-    translate: calc(-1 * var(--sx)) 0;
+    translate: clamp(calc(100cqw - 100%), calc(var(--cx, 64) * 1cqw - var(--sx)), 0px) -50%;
     transform-origin: var(--sx) var(--sy);
     transition: scale 1.1s var(--ease);
   }
-  .ps-right .ps-photo { --cx: 60%; }
+  .ps-right .ps-photo { --cx: 60; }
   /* Hover: the room dims and the picture leans in towards the screen, which stays lit. */
   .ps-media:hover .ps-photo, .ps-media:has(.frame-zoom:focus-visible) .ps-photo { scale: 1.04; }
   .ps-photo :global(.ps-img) { position: absolute; inset: 0; background: transparent; }
@@ -175,13 +176,13 @@ const box = (r: typeof s) => `left: ${r.left}%; top: ${r.top}%; width: ${r.width
   .ps-right .ps-panel > :global(.ps-card) { grid-area: 1 / 2; }
 
   @media (max-width: 1000px) {
-    .ps-panel, .ps-right .ps-panel, .ps-hero .ps-panel { grid-template-columns: minmax(0, 1fr); min-height: 0; border-radius: 22px; }
-    .ps-media, .ps-right .ps-media { grid-area: 1 / 1; aspect-ratio: 4 / 3; margin: 0.6rem 0.6rem 0; border-radius: 16px; }
+    .ps-panel, .ps-right .ps-panel, .ps-hero .ps-panel { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .ps-media, .ps-right .ps-media { grid-area: 1 / 1; aspect-ratio: 4 / 3; }
     .ps-media::after { display: none; }
     .ps-copy, .ps-right .ps-copy { grid-area: 2 / 1; padding: 2rem 1.4rem 1.5rem; }
     .ps-panel > :global(.ps-card), .ps-right .ps-panel > :global(.ps-card) { grid-area: 3 / 1; justify-self: stretch; width: auto; margin: 0 1.4rem 1.6rem; }
     /* The screen sits in the middle of the narrow photo, and its label hangs under the dot so it never runs off the edge. */
-    .ps-photo, .ps-right .ps-photo { --cx: 50%; }
+    .ps-photo, .ps-right .ps-photo { --cx: 50; }
     .ps-mark { flex-direction: column; gap: 0.5rem; translate: -50% -9px; }
   }
 </style>
